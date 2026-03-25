@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IJM – Taller de Iniciación</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #444;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    font-family: 'Lato', sans-serif;
+  }
+
+  .flyer {
+    width: 560px;
+    background: #555555;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    position: relative;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: #4a4a4a;
+    padding: 36px 40px 32px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 2px solid #54C999;
+  }
+
+
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .logo-icon {
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .logo-text .inner { color: #ffffff; }
+  .logo-text .journey { color: #54C999; }
+  .logo-text .method { color: #ffffff; }
+  .logo-text .tm { font-size: 9px; vertical-align: super; color: #ffffff; }
+
+  .tag {
+    display: inline-block;
+    background: rgba(84,201,153,0.15);
+    color: #54C999;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    border: 1px solid rgba(84,201,153,0.3);
+    margin-bottom: 14px;
+  }
+
+  .header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+
+  .header h1 span {
+    color: #54C999;
+  }
+
+  .header-sub {
+    margin-top: 10px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    letter-spacing: 0.3px;
+    line-height: 1.5;
+  }
+
+  /* ─── META BAR ─── */
+  .meta-bar {
+    background: #54C999;
+    padding: 14px 40px;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #2a5a42;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  .meta-item svg {
+    opacity: 0.8;
+  }
+
+  /* ─── BODY ─── */
+  .body {
+    padding: 32px 40px;
+  }
+
+  .section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #54C999;
+    margin-bottom: 16px;
+  }
+
+  .description {
+    font-size: 14.5px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.75;
+    font-weight: 300;
+    margin-bottom: 28px;
+    border-left: 2px solid rgba(84,201,153,0.4);
+    padding-left: 16px;
+  }
+
+  /* ─── PUNTOS ─── */
+  .points {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .point {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 14px 16px;
+  }
+
+  .point-icon {
+    width: 28px;
+    height: 28px;
+    background: rgba(84,201,153,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .point-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .point-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 0 0 28px;
+  }
+
+  /* ─── A QUIÉN VA ─── */
+  .audience {
+    margin-bottom: 28px;
+  }
+
+  .audience-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .aud-tag {
+    font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 6px 14px;
+    border-radius: 20px;
+  }
+
+  /* ─── PRECIO ─── */
+  .price-block {
+    background: rgba(84,201,153,0.08);
+    border: 1px solid rgba(84,201,153,0.25);
+    border-radius: 6px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .price-main {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    color: #54C999;
+    line-height: 1;
+  }
+
+  .price-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  .price-promo {
+    background: rgba(84,201,153,0.15);
+    border: 1px solid rgba(84,201,153,0.3);
+    border-radius: 4px;
+    padding: 10px 16px;
+    text-align: center;
+  }
+
+  .promo-pct {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #54C999;
+    line-height: 1;
+  }
+
+  .promo-desc {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 3px;
+    font-weight: 300;
+    line-height: 1.4;
+  }
+
+  /* ─── CTA ─── */
+  .cta {
+    background: #54C999;
+    border-radius: 4px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 0;
+  }
+
+  .cta-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #2a5a42;
+    letter-spacing: 0.2px;
+  }
+
+  .cta-contact {
+    font-size: 12px;
+    color: rgba(42,90,66,0.75);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  .cta-wa {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #2a5a42;
+    color: #54C999;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 4px;
+    text-decoration: none;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: #444444;
+    padding: 14px 40px;
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.3px;
+  }
+
+  .footer a {
+    color: rgba(84,201,153,0.6);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="flyer">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-row">
+      <!-- Logo IJM recreado en SVG -->
+      <svg class="logo-icon" width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 38 C12 36 5 30 5 21 C5 11 12 4 21 4 C30 4 37 11 37 21" stroke="#54C999" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M21 32 C15 31 11 27 11 21 C11 15 15 11 21 11 C27 11 31 15 31 21" stroke="#54C999" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M21 26 C18 25.5 16 23.5 16 21 C16 18.5 18 16.5 21 16 C24 15.5 26 17.5 26 21" stroke="#54C999" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <!-- Destellos -->
+        <circle cx="34" cy="10" r="1.2" fill="#54C999"/>
+        <circle cx="37" cy="16" r="0.8" fill="#54C999"/>
+        <circle cx="8" cy="30" r="1" fill="#54C999"/>
+        <circle cx="6" cy="15" r="0.7" fill="#54C999"/>
+        <!-- Estrella 4 puntas -->
+        <path d="M33 6 L33.4 7.8 L35.2 8.2 L33.4 8.6 L33 10.4 L32.6 8.6 L30.8 8.2 L32.6 7.8 Z" fill="#54C999"/>
+        <path d="M7 23 L7.3 24.3 L8.6 24.6 L7.3 24.9 L7 26.2 L6.7 24.9 L5.4 24.6 L6.7 24.3 Z" fill="#54C999"/>
+      </svg>
+      <div class="logo-text">
+        <span class="inner">INNER</span><span class="journey">JOURNEY</span><span class="method">METHOD</span><span class="tm">™</span>
+      </div>
+    </div>
+
+    <h1>Taller de<br><span>Iniciación</span></h1>
+    <p class="header-sub">Una experiencia transformadora para conocer el método<br>y vivir en primera persona su potencial.</p>
+  </div>
+
+  <!-- META BAR -->
+  <div class="meta-bar">
+    <div class="meta-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      6 de mayo de 2026 · Presencial
+    </div>
+    <div class="meta-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+      </svg>
+      Barcelona
+    </div>
+    <div class="meta-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      15:00 – 18:00 h
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+
+
+    <div class="section-label">Qué vas a aprender</div>
+    <div class="points">
+      <div class="point">
+        <div class="point-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54C999" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="point-title">Fundamentos del método</div>
+        <div class="point-desc">Bases teóricas del IJM</div>
+      </div>
+      <div class="point">
+        <div class="point-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54C999" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="point-title">Dinámicas en grupo</div>
+        <div class="point-desc">Experiencias colectivas con las 107 cartas</div>
+      </div>
+      <div class="point">
+        <div class="point-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54C999" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="point-title">Método Palabra Imagen</div>
+        <div class="point-desc">Conceptos y preguntas para explorar el subconsciente</div>
+      </div>
+      <div class="point">
+        <div class="point-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54C999" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="point-title">Observar indicios</div>
+        <div class="point-desc">Técnicas utilizando las imágenes para descubrir elementos clave</div>
+      </div>
+    </div>
+
+    <a href="https://silvestrerios-blip.github.io/ijm/metodo-palabra-imagen-IJM.html" target="_blank" style="display:block; background:#54C999; color:#2a5a42; font-family:'Montserrat',sans-serif; font-size:13px; font-weight:700; text-align:center; padding:13px 24px; border-radius:4px; text-decoration:none; margin-bottom:28px; letter-spacing:0.3px;">
+      👉 Información sobre el Método Palabra-Imagen
+    </a>
+
+    <div class="divider"></div>
+
+    <div class="audience">
+      <div class="section-label">Dirigido a</div>
+      <div class="audience-tags">
+        <span class="aud-tag">Coaches</span>
+        <span class="aud-tag">Psicólogos</span>
+        <span class="aud-tag">Profesionales de RRHH</span>
+        <span class="aud-tag">Formadores</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">Material incluido</div>
+    <div style="display:flex; gap:12px; margin-bottom:28px;">
+      <div class="point" style="flex:1; display:flex; align-items:center; gap:12px; padding:14px 16px;">
+        <div class="point-icon" style="flex-shrink:0; margin-bottom:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54C999" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M7 7h10M7 12h10M7 17h6"/></svg>
+        </div>
+        <div>
+          <div class="point-title">Juego de cartas</div>
+          <div class="point-desc">107 cartas IJM originales</div>
+        </div>
+      </div>
+      <div class="point" style="flex:1; display:flex; align-items:center; gap:12px; padding:14px 16px;">
+        <div class="point-icon" style="flex-shrink:0; margin-bottom:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54C999" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div>
+          <div class="point-title">Manual en PDF</div>
+          <div class="point-desc">Guía completa del facilitador</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRECIO -->
+    <div class="section-label">Inversión</div>
+    <div class="price-block" style="padding:14px 20px; margin-bottom:20px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="price-main" style="font-size:24px;">180 €</div>
+        <div class="price-label" style="margin-top:0;">Precio general</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-family:'Montserrat',sans-serif; font-size:13px; font-weight:800; color:#54C999;">–20%</span>
+        <span style="font-size:12px; color:rgba(255,255,255,0.5); font-weight:300;">miembros de <strong style="color:rgba(255,255,255,0.65); font-weight:600;">Human Software</strong></span>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <div>
+        <div class="cta-text">¿Te apuntas? Reserva tu plaza</div>
+        <div class="cta-contact">Plazas limitadas · Inscripción por WhatsApp</div>
+      </div>
+      <a class="cta-wa" href="https://wa.me/34609360381">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        609 360 381
+      </a>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <a href="https://www.innerjourneymethod.com">www.innerjourneymethod.com</a>
+  </div>
+
+</div>
+
+</body>
+</html>
