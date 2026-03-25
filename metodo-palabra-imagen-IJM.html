@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Método Palabra-Imagen · Inner Journey Method™</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #54C999;
+    --green-dark: #2e8c66;
+    --green-light: rgba(84,201,153,0.12);
+    --gray: #666666;
+    --dark: #3a3a3a;
+    --darker: #2a2a2a;
+    --text: #444444;
+    --text-light: #777777;
+    --white: #ffffff;
+    --bg: #f7f7f7;
+    --border: rgba(84,201,153,0.25);
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'Lato', sans-serif;
+    color: var(--text);
+    line-height: 1.8;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: #555555;
+    padding: 36px 60px 32px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 3px solid var(--green);
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(84,201,153,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .logo-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .logo-text .inner  { color: #ffffff; }
+  .logo-text .journey{ color: var(--green); }
+  .logo-text .method { color: #ffffff; }
+  .logo-text .tm     { font-size: 9px; vertical-align: super; color: #ffffff; }
+
+  .header-tag {
+    display: inline-block;
+    background: var(--green-light);
+    color: var(--green);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+
+  .header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.15;
+    letter-spacing: -0.3px;
+  }
+
+  .header h1 span { color: var(--green); }
+
+  .header-sub {
+    margin-top: 10px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+
+  /* ─── CONTENIDO ─── */
+  .content {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 56px 40px 80px;
+  }
+
+  /* Introducción destacada */
+  .intro-block {
+    background: #ffffff;
+    border-left: 4px solid var(--green);
+    border-radius: 0 6px 6px 0;
+    padding: 28px 32px;
+    margin-bottom: 56px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+  }
+
+  .intro-block p {
+    font-size: 15.5px;
+    color: var(--text);
+    line-height: 1.85;
+    font-weight: 300;
+  }
+
+  .intro-block strong {
+    color: var(--dark);
+    font-weight: 700;
+  }
+
+  /* Secciones */
+  .section {
+    margin-bottom: 52px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .section-num {
+    width: 32px;
+    height: 32px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .section h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--darker);
+    line-height: 1.3;
+  }
+
+  .section p {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.85;
+    font-weight: 300;
+    margin-bottom: 14px;
+  }
+
+  .section p:last-child { margin-bottom: 0; }
+
+  .section strong {
+    color: var(--dark);
+    font-weight: 700;
+  }
+
+  /* Cadena Palabra→Imagen */
+  .chain {
+    background: #555555;
+    border-radius: 8px;
+    padding: 32px 36px;
+    margin: 28px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .chain-item {
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .chain-item .word {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .chain-item .desc {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 4px;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+
+  .chain-arrow {
+    font-size: 18px;
+    color: rgba(84,201,153,0.4);
+    padding: 0 4px;
+    font-weight: 300;
+  }
+
+  /* Cita destacada */
+  .quote-block {
+    background: var(--green-light);
+    border-left: 3px solid var(--green);
+    border-radius: 0 6px 6px 0;
+    padding: 20px 28px;
+    margin: 24px 0;
+    font-size: 15px;
+    color: var(--dark);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.75;
+  }
+
+  /* Creencias */
+  .beliefs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .belief-card {
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 20px 22px;
+    border: 1px solid rgba(0,0,0,0.07);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .belief-card .b-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .belief-card.limitante .b-label { color: #c0392b; }
+  .belief-card.potenciadora .b-label { color: var(--green-dark); }
+
+  .belief-card .b-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .belief-card p {
+    font-size: 13.5px;
+    color: var(--text-light);
+    line-height: 1.65;
+    font-weight: 300;
+    margin-bottom: 0 !important;
+  }
+
+  /* Pregunta final */
+  .final-question {
+    background: #555555;
+    border-radius: 8px;
+    padding: 32px 36px;
+    margin-top: 28px;
+    text-align: center;
+  }
+
+  .final-question p {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: rgba(255,255,255,0.85);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.75;
+    margin-bottom: 0 !important;
+  }
+
+  .final-question strong {
+    color: var(--green) !important;
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(84,201,153,0.3), transparent);
+    margin: 48px 0;
+  }
+
+  /* Referencias */
+  .references {
+    background: #f0f0f0;
+    border-radius: 6px;
+    padding: 24px 28px;
+  }
+
+  .references h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 14px;
+  }
+
+  .references ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .references li {
+    font-size: 13px;
+    color: var(--text-light);
+    font-weight: 300;
+    line-height: 1.6;
+    padding: 5px 0 5px 14px;
+    border-left: 2px solid rgba(84,201,153,0.3);
+    margin-bottom: 8px;
+  }
+
+  /* Footer */
+  .footer {
+    background: #555555;
+    padding: 20px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 2px solid var(--green);
+  }
+
+  .footer-logo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  .footer-logo .inner  { color: #ffffff; }
+  .footer-logo .journey{ color: var(--green); }
+  .footer-logo .method { color: #ffffff; }
+  .footer-logo .tm     { font-size: 7px; vertical-align: super; color: #ffffff; }
+
+  .footer-url {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    font-weight: 300;
+    letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 600px) {
+    .header { padding: 28px 24px 24px; }
+    .content { padding: 36px 20px 60px; }
+    .chain { flex-direction: column; gap: 8px; }
+    .chain-arrow { transform: rotate(90deg); }
+    .beliefs-grid { grid-template-columns: 1fr; }
+    .footer { padding: 18px 24px; flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-row">
+    <svg width="40" height="40" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M21 38 C12 36 5 30 5 21 C5 11 12 4 21 4 C30 4 37 11 37 21" stroke="#54C999" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M21 32 C15 31 11 27 11 21 C11 15 15 11 21 11 C27 11 31 15 31 21" stroke="#54C999" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <path d="M21 26 C18 25.5 16 23.5 16 21 C16 18.5 18 16.5 21 16 C24 15.5 26 17.5 26 21" stroke="#54C999" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <circle cx="34" cy="10" r="1.2" fill="#54C999"/>
+      <circle cx="37" cy="16" r="0.8" fill="#54C999"/>
+      <circle cx="8" cy="30" r="1" fill="#54C999"/>
+      <path d="M33 6 L33.4 7.8 L35.2 8.2 L33.4 8.6 L33 10.4 L32.6 8.6 L30.8 8.2 L32.6 7.8 Z" fill="#54C999"/>
+      <path d="M7 23 L7.3 24.3 L8.6 24.6 L7.3 24.9 L7 26.2 L6.7 24.9 L5.4 24.6 L6.7 24.3 Z" fill="#54C999"/>
+    </svg>
+    <div class="logo-text">
+      <span class="inner">INNER</span><span class="journey">JOURNEY</span><span class="method">METHOD</span><span class="tm">™</span>
+    </div>
+  </div>
+  <div class="header-tag">Herramienta del método</div>
+  <h1>Método<br><span>Palabra-Imagen</span></h1>
+  <p class="header-sub">Psicología cognitiva · Neurociencia afectiva · Autoconocimiento</p>
+</div>
+
+<!-- CONTENIDO -->
+<div class="content">
+
+  <!-- Introducción -->
+  <div class="intro-block">
+    <p>El Método Palabra-Imagen es una de las herramientas del <strong>Inner Journey Method™ (IJM)</strong>. Basado en principios de la psicología cognitiva y la neurociencia afectiva, permite acceder a los esquemas emocionales y cognitivos que condicionan nuestra conducta <em>(Schacter, 1996; Kahneman, 2011)</em>, trabajando en el punto de encuentro entre emoción, memoria y creencia mediante la <strong>incongruencia visual</strong> como puerta de acceso a procesos habitualmente fuera de la consciencia.</p>
+  </div>
+
+  <!-- Sección 1 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>Palabra, imagen, experiencia y emoción</h2>
+    </div>
+
+    <div class="chain">
+      <div class="chain-item">
+        <div class="word">Palabra</div>
+        <div class="desc">Conecta con</div>
+      </div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-item">
+        <div class="word">Imagen</div>
+        <div class="desc">Conecta con</div>
+      </div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-item">
+        <div class="word">Experiencia</div>
+        <div class="desc">Conecta con</div>
+      </div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-item">
+        <div class="word">Emoción</div>
+        <div class="desc">Emerge</div>
+      </div>
+    </div>
+
+    <p>Esta emoción fluye desde lo más profundo de nosotros y la historia que la despierta suele pasar desapercibida para nuestra mente consciente.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Sección 2 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>¿Qué pasa cuando la imagen no coincide con lo que esperamos?</h2>
+    </div>
+    <p>Esto activa nuestra mente analítica buscando explicación para la incongruencia. Mientras tanto, se despiertan procesos más intuitivos y emocionales que se liberan de los filtros habituales de la lógica.</p>
+    <div class="quote-block">
+      Es como si el velo que suele ocultar esas emociones se corriera, permitiéndonos conectar directamente con lo que sentimos y con la historia que lo despierta.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Sección 3 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>Cuando vemos fuera aquello que tenemos dentro</h2>
+    </div>
+    <p>Vemos fuera lo que llevamos dentro sin tener consciencia de ello. Cuando nos presentan una imagen, no vemos su totalidad, sino prioritariamente aquello que nos dice algo, aquello que resuena con las experiencias ya grabadas en nuestro cerebro. Incluso podemos ver en las imágenes lo que no hay.</p>
+    <p>Nuestro cerebro construye nuestra percepción de la realidad según sus experiencias y nosotros actuamos según esta percepción que construimos <em>(Kahneman, 2011)</em>.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Sección 4 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Percibir desde diferentes puntos de vista</h2>
+    </div>
+    <p>Nuestra forma de actuar configura nuestra realidad relacional: respondemos al mundo según la percepción que construimos de él, y esa percepción moldea cómo nos relacionamos con los demás.</p>
+    <p>Si queremos ampliar nuestras opciones de respuesta, necesitamos cuestionar los esquemas con los que interpretamos la realidad. Exponernos a puntos de vista diferentes nos permite identificar que lo que damos por evidente no es universal, sino el resultado de nuestra historia personal.</p>
+    <div class="quote-block">
+      Lo que una persona siente como amenaza, otra lo percibe como oportunidad; lo que una ve como pérdida, otra lo lee como libertad. Esa diferencia no está en la imagen: está en quien la mira.
+    </div>
+    <p>Relacionar las emociones que emergen con la historia que las sostiene es el primer paso para localizar nuestras creencias y, desde ahí, elegir conscientemente cómo queremos actuar.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Sección 5 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Cómo funciona</h2>
+    </div>
+    <p>El Método Palabra-Imagen se aplica en un espacio de conversación guiada, individual o grupal. El facilitador presenta una imagen, a veces elegida al azar. El participante la observa y le asigna espontáneamente una palabra. La imagen, sin embargo, tiene ya asociada una palabra propia — y esa palabra no siempre coincide con la del participante. <strong>Es precisamente en esa distancia donde comienza el trabajo.</strong></p>
+    <p>A partir de ahí, una serie de preguntas abiertas ayudan a conectar esa emoción con la historia personal que la sostiene y, desde ahí, con las creencias que condicionan su conducta.</p>
+    <div class="quote-block">
+      No se trata de encontrar la palabra "correcta" — no hay respuesta correcta. Se trata de escuchar lo que emerge cuando bajamos la guardia lógica.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Sección 6 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Localización de creencias</h2>
+    </div>
+    <p>Llamamos <strong>creencias</strong> a aquellas historias que nos han contado o que hemos vivido, y que han forjado patrones de pensamiento y respuesta en nuestro cerebro que sostienen nuestros <strong>valores</strong>. Las primeras creencias se forman en etapas tempranas de la vida, cuando aún no tenemos herramientas para cuestionarlas <em>(Beck, 1979)</em>.</p>
+
+    <div class="beliefs-grid">
+      <div class="belief-card limitante">
+        <div class="b-label">Creencias limitantes</div>
+        <p>Nos frenan e impiden realizar nuestros objetivos. Nacen de la historia que nos contamos sobre lo que hemos vivido, filtrada por la emoción del momento.</p>
+      </div>
+      <div class="belief-card potenciadora">
+        <div class="b-label">Creencias potenciadoras</div>
+        <p>Nos impulsan y refuerzan nuestra capacidad de acción. También nacen de nuestra historia personal y pueden ser activadas conscientemente.</p>
+      </div>
+    </div>
+
+    <p>Y si descubrimos que esa emoción nace a su vez de otra creencia, iremos desenmascarando la red de creencias que condicionan nuestra actuación.</p>
+
+    <div class="final-question">
+      <p><strong>En gran medida actuamos según lo que pensamos y creemos.</strong><br><br>
+      ¿Te imaginas lo que podríamos conseguir si pudiéramos conocer estos circuitos que generan nuestro estado de ánimo, nuestra visión personal de la realidad y, por consiguiente, la forma en que los demás nos reciben y el modo en que construimos nuestras relaciones?</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Referencias -->
+  <div class="references">
+    <h3>Referencias</h3>
+    <ul>
+      <li>Beck, A. T. (1979). <em>Cognitive Therapy and the Emotional Disorders.</em> Penguin Books.</li>
+      <li>Ellis, A. (1962). <em>Reason and Emotion in Psychotherapy.</em> Lyle Stuart.</li>
+      <li>Kahneman, D. (2011). <em>Thinking, Fast and Slow.</em> Farrar, Straus and Giroux.</li>
+      <li>Schacter, D. L. (1996). <em>Searching for Memory: The Brain, the Mind, and the Past.</em> Basic Books.</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">
+    <span class="inner">INNER</span><span class="journey">JOURNEY</span><span class="method">METHOD</span><span class="tm">™</span>
+  </div>
+  <div class="footer-url">www.innerjourneymethod.com</div>
+</div>
+
+</body>
+</html>
