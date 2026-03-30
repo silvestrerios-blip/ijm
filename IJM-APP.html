@@ -818,7 +818,7 @@ nav button.active {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 160px;
+  max-width: 120px;
 }
 .btn-logout {
   background: transparent;
@@ -831,6 +831,8 @@ nav button.active {
   cursor: pointer;
   transition: all 0.2s;
   letter-spacing: 0.04em;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .btn-logout:hover { border-color: rgba(255,255,255,0.7); color: #FFFFFF; }
 
