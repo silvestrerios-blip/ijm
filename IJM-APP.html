@@ -917,10 +917,10 @@ nav button.active {
 </header>
 
 <nav>
-  <button class="active" onclick="showView('home')">🃏 Baraja</button>
-  <button onclick="showView('explore')">🔍 Explorar</button>
-  <button onclick="showView('session')">📋 Sesión</button>
-  <button onclick="showView('history')">🕐 Historial</button>
+  <button class="active" onclick="showView('home', this)">🃏 Baraja</button>
+  <button onclick="showView('explore', this)">🔍 Explorar</button>
+  <button onclick="showView('session', this)">📋 Sesión</button>
+  <button onclick="showView('history', this)">🕐 Historial</button>
 </nav>
 
 <!-- HOME VIEW -->
@@ -1002,6 +1002,21 @@ nav button.active {
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Modal confirmación cerrar sesión -->
+<div class="modal-bg" id="modal-confirm" style="z-index:300">
+  <div class="modal" style="margin-top:30vh">
+    <div class="modal-body" style="text-align:center;padding:28px 24px">
+      <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
+      <div style="font-family:Montserrat,sans-serif;font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--text)">Cerrar sesión</div>
+      <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;line-height:1.5">Se borrarán todas las notas y las cartas extraídas.<br>Esta acción no se puede deshacer.</div>
+      <div style="display:flex;gap:10px">
+        <button onclick="confirmClose(false)" style="flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;font-family:Montserrat,sans-serif;font-size:0.85rem;color:var(--text-muted);cursor:pointer">Cancelar</button>
+        <button onclick="confirmClose(true)" style="flex:1;padding:12px;background:#E24B4A;border:none;border-radius:10px;font-family:Montserrat,sans-serif;font-size:0.85rem;color:#fff;cursor:pointer;font-weight:600">Sí, cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── SUPABASE ──
@@ -1150,11 +1165,11 @@ const state = {
 function imgUrl(n) { return IMG_BASE + n + '.jpg'; }
 
 // ── VIEWS ──
-function showView(v) {
+function showView(v, btn) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
   document.getElementById('view-' + v).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (v === 'session') renderSession();
 }
 
@@ -1355,7 +1370,12 @@ function renderSession() {
 }
 
 function closeSession() {
-  if (!confirm('¿Cerrar la sesión y borrar todas las notas? Esta acción no se puede deshacer.')) return;
+  document.getElementById('modal-confirm').classList.add('open');
+}
+
+function confirmClose(yes) {
+  document.getElementById('modal-confirm').classList.remove('open');
+  if (!yes) return;
   state.deck = [...CONCEPTS];
   state.drawn = [];
   state.current = null;
@@ -1383,8 +1403,13 @@ function exportSession() {
   const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'sesion_IJM.txt'; a.click();
-  URL.revokeObjectURL(url);
+  a.href = url;
+  a.download = 'sesion_IJM.txt';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
   showToast('Sesión exportada');
 }
 
@@ -1545,11 +1570,11 @@ function toggleHistoryDetail(id) {
 
 // ── VIEWS (override para historial) ──
 const _origShowView = showView;
-function showView(v) {
+function showView(v, btn) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
   document.getElementById('view-' + v).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (v === 'session') renderSession();
   if (v === 'history') renderHistory();
 }
