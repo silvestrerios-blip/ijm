@@ -975,8 +975,6 @@ nav button.active {
 
 <!-- SESSION VIEW -->
 <div id="view-session" class="view">
-  <button class="btn-export" onclick="exportSession()">↓ Exportar sesión</button>
-  <button class="btn-close-session" onclick="closeSession()">✕ Cerrar sesión y borrar notas</button>
   <div id="session-list"></div>
 </div>
 
@@ -1514,6 +1512,26 @@ async function doLogout() {
   currentUser = null;
   currentSessionId = null;
   currentClientName = '';
+  // Resetear estado completo
+  state.deck = [...CONCEPTS];
+  state.drawn = [];
+  state.current = null;
+  state.notes = {};
+  state.homeFilter = 'all';
+  state.exploreFilter = 'all';
+  state.flipped = false;
+  try { localStorage.removeItem('ijm_notes'); } catch(e) {}
+  // Resetear UI
+  document.getElementById('card-wrap').style.display = 'none';
+  document.getElementById('card-detail').classList.remove('visible');
+  document.getElementById('btn-reflexiones').style.display = 'none';
+  updateDeckInfo();
+  renderSession();
+  // Volver a la pestaña inicio
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-home').classList.add('active');
+  document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+  document.querySelector('nav button').classList.add('active');
   document.getElementById('login-screen').classList.add('active');
   document.getElementById('user-email').textContent = '';
 }
@@ -1671,4 +1689,3 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
-
