@@ -49,6 +49,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { max-width: 100%; overflow-x: hidden; }
 
 /* ── Protección de imágenes ── */
 img {
@@ -1642,6 +1643,9 @@ try {
   if (saved) state.notes = JSON.parse(saved);
 } catch(e) {}
 
+window.scrollTo(0, 0);
+document.documentElement.scrollLeft = 0;
+document.body.scrollLeft = 0;
 buildPills('home-pills', 'all', setHomeFilter);
 buildPills('explore-pills', 'all', setExploreFilter);
 updateDeckInfo();
