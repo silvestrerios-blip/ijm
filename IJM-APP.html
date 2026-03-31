@@ -1434,9 +1434,31 @@ function confirmClose(yes) {
 
 function printSession() {
   if (!state.drawn.length) { showToast('No hay cartas en la sesión'); return; }
-  document.getElementById('print-client-name').textContent = currentClientName ? 'Cliente: ' + currentClientName : '';
-  document.getElementById('print-date').textContent = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'long', year:'numeric'});
-  window.print();
+  const fecha = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'long', year:'numeric'});
+  const cliente = currentClientName || '';
+  let rows = state.drawn.map((c, i) => {
+    const nota = state.notes[c.n] ? '<div style="font-size:0.8rem;color:#555;font-style:italic;margin-top:4px">📝 ' + state.notes[c.n] + '</div>' : '';
+    return '<div style="display:flex;gap:12px;padding:12px;border:1px solid #ddd;border-radius:10px;margin-bottom:10px;background:#fff">'
+      + '<img src="' + imgUrl(c.n) + '" style="width:60px;height:80px;object-fit:cover;border-radius:6px;flex-shrink:0" onerror="this.style.display='none'">'
+      + '<div><div style="font-size:1rem;font-weight:600;color:#333">' + (i+1) + '. ' + c.en + '</div>'
+      + '<div style="font-size:0.78rem;color:#888">' + c.es + ' · #' + c.n + ' · ' + CATS[c.cat].label + '</div>'
+      + nota + '</div></div>';
+  }).join('');
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<title>Sesión IJM</title></head>'
+    + '<body style="font-family:sans-serif;padding:20px;max-width:500px;margin:0 auto;background:#f8f8f8">'
+    + '<div style="border-bottom:3px solid #54C999;padding-bottom:12px;margin-bottom:20px">'
+    + '<div style="font-weight:800;font-size:1.1rem;letter-spacing:0.1em">INNER<span style="color:#54C999">JOURNEY</span>METHOD™</div>'
+    + (cliente ? '<div style="font-size:0.85rem;color:#555;margin-top:4px">Cliente: ' + cliente + '</div>' : '')
+    + '<div style="font-size:0.8rem;color:#888;margin-top:2px">' + fecha + '</div></div>'
+    + rows
+    + '<div style="margin-top:20px;font-size:0.7rem;color:#aaa;text-align:center">Inner Journey Method™</div>'
+    + '<script>window.onload=function(){window.print()}<\/script>'
+    + '</body></html>';
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
 function exportSession() {
