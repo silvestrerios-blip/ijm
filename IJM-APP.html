@@ -853,22 +853,6 @@ nav button.active {
   white-space: nowrap;
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
-
-/* ── PRINT / PDF ── */
-@media print {
-  header, nav, .btn-pdf, .login-screen, .modal-bg, .modal-cliente, .toast { display: none !important; }
-  body { background: #fff; }
-  .view { display: none !important; }
-  #view-session { display: block !important; padding: 20px; }
-  .session-card { break-inside: avoid; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; padding: 12px; display: flex; gap: 12px; }
-  .session-thumb img { width: 60px; height: 80px; object-fit: cover; border-radius: 6px; }
-  .session-en { font-size: 1rem; font-weight: 600; }
-  .session-es { font-size: 0.75rem; color: #888; }
-  .session-note { font-size: 0.8rem; color: #555; font-style: italic; margin-top: 4px; }
-  .print-header { display: block !important; font-family: Montserrat, sans-serif; margin-bottom: 20px; border-bottom: 2px solid #54C999; padding-bottom: 10px; }
-  .print-header h2 { font-size: 1.3rem; font-weight: 700; color: #333; }
-  .print-header p { font-size: 0.8rem; color: #888; margin-top: 4px; }
-}
 </style>
 </head>
 <body>
@@ -998,12 +982,6 @@ nav button.active {
 
 <!-- SESSION VIEW -->
 <div id="view-session" class="view">
-  <div class="print-header" style="display:none">
-    <h2>INNER JOURNEY METHOD™</h2>
-    <p id="print-client-name"></p>
-    <p id="print-date"></p>
-  </div>
-  <button class="btn-pdf" onclick="printSession()" style="width:100%;padding:14px;background:transparent;border:1.5px solid var(--accent);color:var(--accent);border-radius:var(--radius);font-family:'Montserrat',sans-serif;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-bottom:16px" onmouseover="this.style.background='var(--accent)';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">⬇ Guardar como PDF</button>
   <div id="session-list"></div>
 </div>
 
@@ -1029,36 +1007,6 @@ nav button.active {
 </div>
 
 <div class="toast" id="toast"></div>
-
-<!-- Modal exportar sesión -->
-<div class="modal-bg" id="modal-export" style="z-index:301" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" style="margin-top:10vh">
-    <div class="modal-body" style="padding:24px">
-      <div style="font-family:Montserrat,sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:14px;color:var(--text)">📋 Sesión exportada</div>
-      <textarea id="export-content" readonly style="width:100%;height:220px;border:1px solid var(--border);border-radius:10px;padding:12px;font-family:monospace;font-size:0.78rem;color:var(--text);background:#f8f8f8;resize:none;margin-bottom:14px;line-height:1.5"></textarea>
-      <div style="display:flex;gap:10px;margin-bottom:10px">
-        <button onclick="copyExport()" style="flex:1;padding:12px;background:var(--accent);border:none;border-radius:10px;font-family:Montserrat,sans-serif;font-size:0.85rem;color:#fff;cursor:pointer;font-weight:600">📋 Copiar</button>
-        <button onclick="downloadExport()" style="flex:1;padding:12px;background:#444;border:none;border-radius:10px;font-family:Montserrat,sans-serif;font-size:0.85rem;color:#fff;cursor:pointer">⬇ Descargar</button>
-      </div>
-      <button onclick="document.getElementById('modal-export').classList.remove('open')" style="width:100%;padding:11px;background:transparent;border:1px solid var(--border);border-radius:10px;font-family:Montserrat,sans-serif;font-size:0.8rem;color:var(--text-muted);cursor:pointer">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal confirmación cerrar sesión -->
-<div class="modal-bg" id="modal-confirm" style="z-index:300">
-  <div class="modal" style="margin-top:30vh">
-    <div class="modal-body" style="text-align:center;padding:28px 24px">
-      <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
-      <div style="font-family:Montserrat,sans-serif;font-size:1rem;font-weight:600;margin-bottom:8px;color:var(--text)">Cerrar sesión</div>
-      <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:24px;line-height:1.5">Se borrarán todas las notas y las cartas extraídas.<br>Esta acción no se puede deshacer.</div>
-      <div style="display:flex;gap:10px">
-        <button onclick="confirmClose(false)" style="flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;font-family:Montserrat,sans-serif;font-size:0.85rem;color:var(--text-muted);cursor:pointer">Cancelar</button>
-        <button onclick="confirmClose(true)" style="flex:1;padding:12px;background:#E24B4A;border:none;border-radius:10px;font-family:Montserrat,sans-serif;font-size:0.85rem;color:#fff;cursor:pointer;font-weight:600">Sí, cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
 // ── SUPABASE ──
@@ -1412,12 +1360,7 @@ function renderSession() {
 }
 
 function closeSession() {
-  document.getElementById('modal-confirm').classList.add('open');
-}
-
-function confirmClose(yes) {
-  document.getElementById('modal-confirm').classList.remove('open');
-  if (!yes) return;
+  if (!confirm('¿Cerrar la sesión y borrar todas las notas? Esta acción no se puede deshacer.')) return;
   state.deck = [...CONCEPTS];
   state.drawn = [];
   state.current = null;
@@ -1432,79 +1375,27 @@ function confirmClose(yes) {
   showToast('Sesión cerrada y notas borradas');
 }
 
-function printSession() {
-  if (!state.drawn.length) { showToast('No hay cartas en la sesión'); return; }
-  const fecha = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'long', year:'numeric'});
-  const cliente = currentClientName || '';
-  let rows = state.drawn.map((c, i) => {
-    const nota = state.notes[c.n] ? '<div style="font-size:0.8rem;color:#555;font-style:italic;margin-top:4px">📝 ' + state.notes[c.n] + '</div>' : '';
-    return '<div style="display:flex;gap:12px;padding:12px;border:1px solid #ddd;border-radius:10px;margin-bottom:10px;background:#fff">'
-      + '<img src="' + imgUrl(c.n) + '" style="width:60px;height:80px;object-fit:cover;border-radius:6px;flex-shrink:0" onerror="this.style.display='none'">'
-      + '<div><div style="font-size:1rem;font-weight:600;color:#333">' + (i+1) + '. ' + c.en + '</div>'
-      + '<div style="font-size:0.78rem;color:#888">' + c.es + ' · #' + c.n + ' · ' + CATS[c.cat].label + '</div>'
-      + nota + '</div></div>';
-  }).join('');
-  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-    + '<title>Sesión IJM</title></head>'
-    + '<body style="font-family:sans-serif;padding:20px;max-width:500px;margin:0 auto;background:#f8f8f8">'
-    + '<div style="border-bottom:3px solid #54C999;padding-bottom:12px;margin-bottom:20px">'
-    + '<div style="font-weight:800;font-size:1.1rem;letter-spacing:0.1em">INNER<span style="color:#54C999">JOURNEY</span>METHOD™</div>'
-    + (cliente ? '<div style="font-size:0.85rem;color:#555;margin-top:4px">Cliente: ' + cliente + '</div>' : '')
-    + '<div style="font-size:0.8rem;color:#888;margin-top:2px">' + fecha + '</div></div>'
-    + rows
-    + '<div style="margin-top:20px;font-size:0.7rem;color:#aaa;text-align:center">Inner Journey Method™</div>'
-    + '<script>window.onload=function(){window.print()}<\/script>'
-    + '</body></html>';
-  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank');
-  setTimeout(() => URL.revokeObjectURL(url), 10000);
-}
-
 function exportSession() {
   if (!state.drawn.length) { showToast('No hay cartas en la sesión'); return; }
   let txt = 'SESIÓN INNER JOURNEY METHOD™\n';
-  txt += currentClientName ? 'Cliente: ' + currentClientName + '\n' : '';
   txt += new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'long', year:'numeric'}) + '\n';
   txt += '='.repeat(40) + '\n\n';
   state.drawn.forEach((c, i) => {
-    txt += (i+1) + '. ' + c.en + ' / ' + c.es + ' [Carta #' + c.n + ' · ' + CATS[c.cat].label + ']\n';
-    if (state.notes[c.n]) txt += '   Notas: ' + state.notes[c.n] + '\n';
+    txt += `${i+1}. ${c.en} / ${c.es} [Carta #${c.n} · ${CATS[c.cat].label}]\n`;
+    if (state.notes[c.n]) txt += `   Notas: ${state.notes[c.n]}\n`;
     txt += '\n';
   });
-  document.getElementById('export-content').value = txt;
-  document.getElementById('modal-export').classList.add('open');
-}
-
-function copyExport() {
-  const ta = document.getElementById('export-content');
-  ta.select();
-  ta.setSelectionRange(0, 99999);
-  try {
-    document.execCommand('copy');
-    showToast('Copiado al portapapeles');
-  } catch(e) {
-    navigator.clipboard.writeText(ta.value).then(() => showToast('Copiado al portapapeles')).catch(() => showToast('Selecciona el texto y copia manualmente'));
-  }
-}
-
-function downloadExport() {
-  const txt = document.getElementById('export-content').value;
-  try {
-    const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'sesion_IJM.txt';
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
-    showToast('Descargando...');
-  } catch(e) {
-    showToast('Usa el botón Copiar');
-  }
+  const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'sesion_IJM.txt';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Sesión exportada');
 }
 
 // ── TOAST ──
@@ -1570,7 +1461,6 @@ async function doLogout() {
   currentUser = null;
   currentSessionId = null;
   currentClientName = '';
-  // Resetear estado completo
   state.deck = [...CONCEPTS];
   state.drawn = [];
   state.current = null;
@@ -1579,13 +1469,11 @@ async function doLogout() {
   state.exploreFilter = 'all';
   state.flipped = false;
   try { localStorage.removeItem('ijm_notes'); } catch(e) {}
-  // Resetear UI
   document.getElementById('card-wrap').style.display = 'none';
   document.getElementById('card-detail').classList.remove('visible');
   document.getElementById('btn-reflexiones').style.display = 'none';
   updateDeckInfo();
   renderSession();
-  // Volver a la pestaña inicio
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.getElementById('view-home').classList.add('active');
   document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
@@ -1606,7 +1494,6 @@ async function startSession() {
   const name = document.getElementById('cliente-nombre').value.trim();
   if (!name) { document.getElementById('cliente-error').textContent = 'Escribe el nombre del cliente'; return; }
   currentClientName = name;
-  // Crear sesión en Supabase (no bloquea si falla)
   try {
     const { data, error } = await supa.from('sessions').insert({
       facilitator_id: currentUser.id,
@@ -1700,9 +1587,6 @@ try {
   if (saved) state.notes = JSON.parse(saved);
 } catch(e) {}
 
-window.scrollTo(0, 0);
-document.documentElement.scrollLeft = 0;
-document.body.scrollLeft = 0;
 buildPills('home-pills', 'all', setHomeFilter);
 buildPills('explore-pills', 'all', setExploreFilter);
 updateDeckInfo();
