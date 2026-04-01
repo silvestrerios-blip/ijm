@@ -976,7 +976,7 @@ nav button.active {
       <input type="text" id="cliente-nombre" placeholder="Nombre del cliente">
     </div>
     <button class="btn-login" onclick="startSession()">Comenzar sesión</button>
-    <button onclick="document.getElementById('modal-cliente').classList.remove('open')" style="width:100%;padding:11px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);font-family:'Montserrat',sans-serif;font-size:0.8rem;color:var(--text-muted);cursor:pointer;margin-top:8px;letter-spacing:0.06em;text-transform:uppercase">Cancelar</button>
+    <button onclick="cancelSession()" style="width:100%;padding:11px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);font-family:'Montserrat',sans-serif;font-size:0.8rem;color:var(--text-muted);cursor:pointer;margin-top:8px;letter-spacing:0.06em;text-transform:uppercase">Cancelar</button>
     <div class="login-error" id="cliente-error"></div>
   </div>
 </div>
@@ -1625,6 +1625,38 @@ function onLogin(user) {
   document.getElementById('user-email').textContent = user.email;
   // Pedir nombre del cliente
   document.getElementById('modal-cliente').classList.add('open');
+}
+
+async function cancelSession() {
+  document.getElementById('modal-cliente').classList.remove('open');
+  // Guardar notas pendientes en Supabase si hay sesión activa
+  if (currentSessionId && Object.keys(state.notes).length) {
+    try {
+      var saves = Object.keys(state.notes).map(function(n) {
+        return supa.from('session_cards')
+          .update({ notes: state.notes[n] })
+          .eq('session_id', currentSessionId)
+          .eq('card_number', parseInt(n));
+      });
+      await Promise.all(saves);
+    } catch(e) {}
+  }
+  // Limpiar estado
+  state.deck = [...CONCEPTS];
+  state.drawn = [];
+  state.current = null;
+  state.notes = {};
+  state.flipped = false;
+  currentSessionId = null;
+  currentClientName = '';
+  try { localStorage.removeItem('ijm_notes'); } catch(e) {}
+  document.getElementById('card-wrap').style.display = 'none';
+  document.getElementById('card-detail').classList.remove('visible');
+  document.getElementById('btn-reflexiones').style.display = 'none';
+  document.getElementById('cliente-nombre').value = '';
+  document.getElementById('cliente-error').textContent = '';
+  updateDeckInfo();
+  renderSession();
 }
 
 async function startSession() {
