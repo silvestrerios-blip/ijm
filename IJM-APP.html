@@ -982,8 +982,6 @@ nav button.active {
 
 <!-- SESSION VIEW -->
 <div id="view-session" class="view">
-  <button onclick="pdfSession()" style="width:100%;padding:14px;background:transparent;border:1.5px solid var(--accent);color:var(--accent);border-radius:var(--radius);font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;margin-bottom:10px">⬇ Guardar PDF</button>
-  <button onclick="closeSession()" style="width:100%;padding:14px;background:transparent;border:1.5px solid #E24B4A;color:#E24B4A;border-radius:var(--radius);font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;margin-bottom:16px">✕ Cerrar sesión</button>
   <div id="session-list"></div>
 </div>
 
@@ -1009,19 +1007,6 @@ nav button.active {
 </div>
 
 <div class="toast" id="toast"></div>
-
-<!-- Modal cerrar sesión -->
-<div id="modal-confirm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:400;align-items:center;justify-content:center;padding:20px">
-  <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:340px;width:100%;text-align:center">
-    <div style="font-size:2rem;margin-bottom:10px">⚠️</div>
-    <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:600;margin-bottom:8px;color:#333">Cerrar sesión</div>
-    <div style="font-size:0.85rem;color:#888;margin-bottom:24px;line-height:1.5">Se borrarán las cartas extraídas y las notas.<br>Esta acción no se puede deshacer.</div>
-    <div style="display:flex;gap:10px">
-      <button onclick="confirmClose(false)" style="flex:1;padding:12px;background:transparent;border:1px solid #e0e0e0;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:0.85rem;color:#888;cursor:pointer">Cancelar</button>
-      <button onclick="confirmClose(true)" style="flex:1;padding:12px;background:#E24B4A;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:0.85rem;color:#fff;cursor:pointer;font-weight:600">Sí, cerrar</button>
-    </div>
-  </div>
-</div>
 
 <script>
 // ── SUPABASE ──
@@ -1375,13 +1360,7 @@ function renderSession() {
 }
 
 function closeSession() {
-  const m = document.getElementById('modal-confirm');
-  m.style.display = 'flex';
-}
-
-function confirmClose(yes) {
-  document.getElementById('modal-confirm').style.display = 'none';
-  if (!yes) return;
+  if (!confirm('¿Cerrar la sesión y borrar todas las notas? Esta acción no se puede deshacer.')) return;
   state.deck = [...CONCEPTS];
   state.drawn = [];
   state.current = null;
@@ -1394,35 +1373,6 @@ function confirmClose(yes) {
   updateDeckInfo();
   renderSession();
   showToast('Sesión cerrada y notas borradas');
-}
-
-function pdfSession() {
-  if (!state.drawn.length) { showToast('No hay cartas en la sesión'); return; }
-  const fecha = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'long', year:'numeric'});
-  const cliente = currentClientName || '';
-  const filas = state.drawn.map((c, i) => {
-    const nota = state.notes[c.n] ? '<div style="font-size:0.8rem;color:#555;font-style:italic;margin-top:4px">📝 ' + state.notes[c.n] + '</div>' : '';
-    return '<div style="display:flex;gap:12px;padding:12px;border:1px solid #e0e0e0;border-radius:10px;margin-bottom:10px;background:#fff;page-break-inside:avoid">'
-      + '<img src="' + imgUrl(c.n) + '" style="width:56px;height:75px;object-fit:cover;border-radius:6px;flex-shrink:0" onerror="this.style.display='none'">'
-      + '<div style="flex:1"><div style="font-family:Montserrat,sans-serif;font-size:1rem;font-weight:600;color:#333">' + (i+1) + '. ' + c.en + '</div>'
-      + '<div style="font-size:0.78rem;color:#888;margin-top:2px">' + c.es + ' · Carta #' + c.n + ' · ' + CATS[c.cat].label + '</div>'
-      + nota + '</div></div>';
-  }).join('');
-  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
-    + '<meta name="viewport" content="width=device-width,initial-scale=1">'
-    + '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">'
-    + '<title>Sesión IJM</title></head>'
-    + '<body style="font-family:Montserrat,sans-serif;padding:24px;max-width:480px;margin:0 auto;background:#f8f8f8">'
-    + '<div style="border-bottom:3px solid #54C999;padding-bottom:12px;margin-bottom:20px">'
-    + '<div style="font-weight:800;font-size:1.1rem;letter-spacing:0.1em;color:#333">INNER<span style="color:#54C999">JOURNEY</span>METHOD™</div>'
-    + (cliente ? '<div style="font-size:0.85rem;color:#555;margin-top:6px">Cliente: <strong>' + cliente + '</strong></div>' : '')
-    + '<div style="font-size:0.8rem;color:#888;margin-top:2px">' + fecha + '</div></div>'
-    + filas
-    + '<div style="margin-top:24px;font-size:0.7rem;color:#bbb;text-align:center">Inner Journey Method™</div>'
-    + '</body></html>';
-  const w = window.open('', '_blank');
-  if (w) { w.document.write(html); w.document.close(); w.setTimeout(function(){ w.print(); }, 800); }
-  else { showToast('Activa las ventanas emergentes en tu navegador'); }
 }
 
 function exportSession() {
