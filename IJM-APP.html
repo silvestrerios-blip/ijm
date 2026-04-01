@@ -982,6 +982,8 @@ nav button.active {
 
 <!-- SESSION VIEW -->
 <div id="view-session" class="view">
+  <button onclick="pdfSession()" style="width:100%;padding:14px;background:transparent;border:1.5px solid var(--accent);color:var(--accent);border-radius:var(--radius);font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;margin-bottom:10px">⬇ Guardar PDF</button>
+  <button onclick="closeSession()" style="width:100%;padding:14px;background:transparent;border:1.5px solid #E24B4A;color:#E24B4A;border-radius:var(--radius);font-family:'Montserrat',sans-serif;font-size:0.82rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;margin-bottom:16px">✕ Cerrar sesión</button>
   <div id="session-list"></div>
 </div>
 
@@ -1007,6 +1009,19 @@ nav button.active {
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Modal cerrar sesión -->
+<div id="modal-confirm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:400;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:340px;width:100%;text-align:center">
+    <div style="font-size:2rem;margin-bottom:10px">⚠️</div>
+    <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:600;margin-bottom:8px;color:#333">Cerrar sesión</div>
+    <div style="font-size:0.85rem;color:#888;margin-bottom:24px;line-height:1.5">Se borrarán las cartas extraídas y las notas.<br>Esta acción no se puede deshacer.</div>
+    <div style="display:flex;gap:10px">
+      <button onclick="confirmClose(false)" style="flex:1;padding:12px;background:transparent;border:1px solid #e0e0e0;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:0.85rem;color:#888;cursor:pointer">Cancelar</button>
+      <button onclick="confirmClose(true)" style="flex:1;padding:12px;background:#E24B4A;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:0.85rem;color:#fff;cursor:pointer;font-weight:600">Sí, cerrar</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── SUPABASE ──
@@ -1360,7 +1375,13 @@ function renderSession() {
 }
 
 function closeSession() {
-  if (!confirm('¿Cerrar la sesión y borrar todas las notas? Esta acción no se puede deshacer.')) return;
+  const m = document.getElementById('modal-confirm');
+  m.style.display = 'flex';
+}
+
+function confirmClose(yes) {
+  document.getElementById('modal-confirm').style.display = 'none';
+  if (!yes) return;
   state.deck = [...CONCEPTS];
   state.drawn = [];
   state.current = null;
@@ -1373,6 +1394,316 @@ function closeSession() {
   updateDeckInfo();
   renderSession();
   showToast('Sesión cerrada y notas borradas');
+}
+
+function pdfSession() {
+  if (!state.drawn.length) { showToast('No hay cartas en la sesión'); return; }
+  const fecha = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'long', year:'numeric'});
+  const cliente = currentClientName || '';
+  const filas = state.drawn.map((c, i) => {
+    const nota = state.notes[c.n] ? '<div style="font-size:0.8rem;color:#555;font-style:italic;margin-top:4px">📝 ' + state.notes[c.n] + '</div>' : '';
+    return '<div style="display:flex;gap:12px;padding:12px;border:1px solid #e0e0e0;border-radius:10px;margin-bottom:10px;background:#fff;page-break-inside:avoid">'
+      + '<img src="' + imgUrl(c.n) + '" style="width:56px;height:75px;object-fit:cover;border-radius:6px;flex-shrink:0">'
+      + '<div style="flex:1"><div style="font-family:Montserrat,sans-serif;font-size:1rem;font-weight:600;color:#333">' + (i+1) + '. ' + c.en + '</div>'
+      + '<div style="font-size:0.78rem;color:#888;margin-top:2px">' + c.es + ' · Carta #' + c.n + ' · ' + CATS[c.cat].label + '</div>'
+      + nota + '</div></div>';
+  }).join('');
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">'
+    + '<title>Sesión IJM</title></head>'
+    + '<body style="font-family:Montserrat,sans-serif;padding:24px;max-width:480px;margin:0 auto;background:#f8f8f8">'
+    + '<div style="border-bottom:3px solid #54C999;padding-bottom:12px;margin-bottom:20px">'
+    + '<div style="font-weight:800;font-size:1.1rem;letter-spacing:0.1em;color:#333">INNER<span style="color:#54C999">JOURNEY</span>METHOD™</div>'
+    + (cliente ? '<div style="font-size:0.85rem;color:#555;margin-top:6px">Cliente: <strong>' + cliente + '</strong></div>' : '')
+    + '<div style="font-size:0.8rem;color:#888;margin-top:2px">' + fecha + '</div></div>'
+    + filas
+    + '<div style="margin-top:24px;font-size:0.7rem;color:#bbb;text-align:center">Inner Journey Method™</div>'
+    + '</body></html>';
+  const w = window.open('', '_blank');
+  if (w) { w.document.write(html); w.document.close(); w.setTimeout(function(){ w.print(); }, 800); }
+  else { showToast('Activa las ventanas emergentes en tu navegador'); }
+}
+
+function exportSession() {
+  if (!state.drawn.length) { showToast('No hay cartas en la sesión'); return; }
+  let txt = 'SESIÓN INNER JOURNEY METHOD™\n';
+  txt += new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'long', year:'numeric'}) + '\n';
+  txt += '='.repeat(40) + '\n\n';
+  state.drawn.forEach((c, i) => {
+    txt += `${i+1}. ${c.en} / ${c.es} [Carta #${c.n} · ${CATS[c.cat].label}]\n`;
+    if (state.notes[c.n]) txt += `   Notas: ${state.notes[c.n]}\n`;
+    txt += '\n';
+  });
+  const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'sesion_IJM.txt';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Sesión exportada');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── LOGIN / SUPABASE ──
+function switchTab(tab) {
+  document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('tab-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.querySelectorAll('.login-tab').forEach((b,i) => b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
+  document.getElementById('login-error').textContent = '';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  if (!email || !pass) { document.getElementById('login-error').textContent = 'Rellena todos los campos'; return; }
+  const { data, error } = await supa.auth.signInWithPassword({ email, password: pass });
+  if (error) { document.getElementById('login-error').textContent = 'Email o contraseña incorrectos'; return; }
+  onLogin(data.user);
+}
+
+async function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = '';
+  if (!name || !email || !pass) { errEl.textContent = 'Rellena todos los campos'; return; }
+  if (pass.length < 6) { errEl.textContent = 'La contrasena debe tener al menos 6 caracteres'; return; }
+  errEl.style.color = 'var(--text-muted)';
+  errEl.textContent = 'Creando cuenta...';
+  try {
+    const { data, error } = await supa.auth.signUp({ email, password: pass, options: { data: { name } } });
+    if (error) {
+      errEl.style.color = '#E24B4A';
+      errEl.textContent = error.message;
+      return;
+    }
+    if (data.user && !data.session) {
+      errEl.style.color = '#1D9E75';
+      errEl.textContent = 'Revisa tu email para confirmar la cuenta, luego entra con tus datos.';
+      return;
+    }
+    if (data.user) {
+      errEl.style.color = 'var(--text-muted)';
+      errEl.textContent = '';
+      onLogin(data.user);
+    }
+  } catch(e) {
+    errEl.style.color = '#E24B4A';
+    errEl.textContent = 'Error de conexion. Intentalo de nuevo.';
+  }
+}
+
+async function doLogout() {
+  await supa.auth.signOut();
+  currentUser = null;
+  currentSessionId = null;
+  currentClientName = '';
+  state.deck = [...CONCEPTS];
+  state.drawn = [];
+  state.current = null;
+  state.notes = {};
+  state.homeFilter = 'all';
+  state.exploreFilter = 'all';
+  state.flipped = false;
+  try { localStorage.removeItem('ijm_notes'); } catch(e) {}
+  document.getElementById('card-wrap').style.display = 'none';
+  document.getElementById('card-detail').classList.remove('visible');
+  document.getElementById('btn-reflexiones').style.display = 'none';
+  updateDeckInfo();
+  renderSession();
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-home').classList.add('active');
+  document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+  document.querySelector('nav button').classList.add('active');
+  document.getElementById('login-screen').classList.add('active');
+  document.getElementById('user-email').textContent = '';
+}
+
+function onLogin(user) {
+  currentUser = user;
+  document.getElementById('login-screen').classList.remove('active');
+  document.getElementById('user-email').textContent = user.email;
+  // Pedir nombre del cliente
+  document.getElementById('modal-cliente').classList.add('open');
+}
+
+async function startSession() {
+  const name = document.getElementById('cliente-nombre').value.trim();
+  if (!name) { document.getElementById('cliente-error').textContent = 'Escribe el nombre del cliente'; return; }
+  currentClientName = name;
+  try {
+    const { data, error } = await supa.from('sessions').insert({
+      facilitator_id: currentUser.id,
+      client_name: name
+    }).select().single();
+    if (!error && data) currentSessionId = data.id;
+  } catch(e) {}
+  document.getElementById('modal-cliente').classList.remove('open');
+  document.getElementById('cliente-nombre').value = '';
+  document.getElementById('cliente-error').textContent = '';
+  showToast(`Sesión con ${name} iniciada`);
+}
+
+// ── GUARDAR CARTA EN SUPABASE ──
+async function saveCardToSupabase(card) {
+  if (!currentSessionId) return;
+  await supa.from('session_cards').insert({
+    session_id: currentSessionId,
+    card_number: card.n,
+    card_en: card.en,
+    card_es: card.es,
+    card_cat: card.cat,
+    notes: ''
+  });
+}
+
+// ── GUARDAR NOTA EN SUPABASE ──
+async function saveNoteToSupabase(cardN, note) {
+  if (!currentSessionId) return;
+  await supa.from('session_cards')
+    .update({ notes: note })
+    .eq('session_id', currentSessionId)
+    .eq('card_number', cardN);
+}
+
+// ── HISTORIAL ──
+async function renderHistory() {
+  const list = document.getElementById('history-list');
+  list.innerHTML = `<div class="session-empty" style="padding:40px 0;text-align:center;color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-style:italic">Cargando...</div>`;
+  if (!currentUser) return;
+  const { data: sessions } = await supa.from('sessions')
+    .select('*, session_cards(*)')
+    .eq('facilitator_id', currentUser.id)
+    .order('created_at', { ascending: false });
+  if (!sessions || !sessions.length) {
+    list.innerHTML = `<div class="session-empty" style="padding:40px 0;text-align:center;color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-style:italic">No hay sesiones guardadas todavía</div>`;
+    return;
+  }
+  list.innerHTML = sessions.map(s => `
+    <div class="history-item" onclick="toggleHistoryDetail('${s.id}')">
+      <div class="history-client">${s.client_name}</div>
+      <div class="history-date">${new Date(s.created_at).toLocaleDateString('es-ES', {day:'2-digit',month:'long',year:'numeric'})}</div>
+      <div class="history-cards">
+        ${(s.session_cards||[]).map(c => `<span class="history-card-tag">${c.card_en}</span>`).join('')}
+      </div>
+      <div class="history-detail" id="hd-${s.id}">
+        ${(s.session_cards||[]).map(c => `
+          <div class="history-detail-card">
+            <div class="hdc-thumb"><img src="${IMG_BASE}${c.card_number}.jpg" onerror="this.style.display='none'"><div class="img-protect"></div></div>
+            <div class="hdc-info">
+              <div class="en">${c.card_en}</div>
+              <div class="es">${c.card_es}</div>
+              ${c.notes ? `<div class="note">${c.notes}</div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleHistoryDetail(id) {
+  const el = document.getElementById('hd-' + id);
+  el.classList.toggle('open');
+}
+
+// ── VIEWS (override para historial) ──
+const _origShowView = showView;
+function showView(v, btn) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (v === 'session') renderSession();
+  if (v === 'history') renderHistory();
+}
+
+// ── INIT ──
+try {
+  const saved = localStorage.getItem('ijm_notes');
+  if (saved) state.notes = JSON.parse(saved);
+} catch(e) {}
+
+buildPills('home-pills', 'all', setHomeFilter);
+buildPills('explore-pills', 'all', setExploreFilter);
+updateDeckInfo();
+renderExploreGrid();
+
+// Comprobar sesión activa
+supa.auth.getSession().then(({ data: { session } }) => {
+  if (session) {
+    onLogin(session.user);
+  }
+});
+</script>
+
+<script>
+/* ── Protección de imágenes ── */
+document.addEventListener('contextmenu', function(e) {
+  if (e.target.tagName === 'IMG') {
+    e.preventDefault();
+    return false;
+  }
+});
+document.addEventListener('dragstart', function(e) {
+  if (e.target.tagName === 'IMG') {
+    e.preventDefault();
+    return false;
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    return false;
+  }
+});
+</script>
+
+<script>
+/* ── Registro del Service Worker (PWA) ── */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('IJM SW registrado:', reg.scope))
+      .catch(err => console.log('IJM SW error:', err));
+  });
+}
+</script>
+</body>
+</html>      + '<img src="' + imgUrl(c.n) + '" style="width:56px;height:75px;object-fit:cover;border-radius:6px;flex-shrink:0">'
+      + '<img src="' + imgUrl(c.n) + '" style="width:56px;height:75px;object-fit:cover;border-radius:6px;flex-shrink:0">'
+      + '<div style="flex:1"><div style="font-family:Montserrat,sans-serif;font-size:1rem;font-weight:600;color:#333">' + (i+1) + '. ' + c.en + '</div>'
+      + '<div style="font-size:0.78rem;color:#888;margin-top:2px">' + c.es + ' · Carta #' + c.n + ' · ' + CATS[c.cat].label + '</div>'
+      + nota + '</div></div>';
+  }).join('');
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">'
+    + '<title>Sesión IJM</title></head>'
+    + '<body style="font-family:Montserrat,sans-serif;padding:24px;max-width:480px;margin:0 auto;background:#f8f8f8">'
+    + '<div style="border-bottom:3px solid #54C999;padding-bottom:12px;margin-bottom:20px">'
+    + '<div style="font-weight:800;font-size:1.1rem;letter-spacing:0.1em;color:#333">INNER<span style="color:#54C999">JOURNEY</span>METHOD™</div>'
+    + (cliente ? '<div style="font-size:0.85rem;color:#555;margin-top:6px">Cliente: <strong>' + cliente + '</strong></div>' : '')
+    + '<div style="font-size:0.8rem;color:#888;margin-top:2px">' + fecha + '</div></div>'
+    + filas
+    + '<div style="margin-top:24px;font-size:0.7rem;color:#bbb;text-align:center">Inner Journey Method™</div>'
+    + '</body></html>';
+  const w = window.open('', '_blank');
+  if (w) { w.document.write(html); w.document.close(); w.setTimeout(function(){ w.print(); }, 800); }
+  else { showToast('Activa las ventanas emergentes en tu navegador'); }
 }
 
 function exportSession() {
