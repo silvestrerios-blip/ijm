@@ -125,21 +125,6 @@ nav button {
   border-bottom: 2px solid transparent;
   transition: all 0.2s;
 }
-.btn-nav-close {
-  padding: 8px 14px;
-  border: none;
-  background: transparent;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: #E24B4A;
-  cursor: pointer;
-  border-left: 1px solid var(--border);
-  white-space: nowrap;
-  transition: background 0.2s;
-}
-.btn-nav-close:hover { background: #fff0f0; }
 nav button.active {
   color: #54C999;
   border-bottom-color: #54C999;
@@ -851,58 +836,6 @@ nav button.active {
 }
 .btn-logout:hover { border-color: rgba(255,255,255,0.7); color: #FFFFFF; }
 
-/* ── PDF OVERLAY ── */
-#pdf-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: #f8f8f8;
-  z-index: 500;
-  overflow-y: auto;
-  padding: 20px;
-}
-#pdf-overlay.open { display: block; }
-.pdf-toolbar {
-  position: sticky;
-  top: 0;
-  background: #666666;
-  color: #fff;
-  padding: 12px 16px;
-  display: flex;
-  gap: 10px;
-  margin: -20px -20px 20px -20px;
-  z-index: 10;
-}
-.pdf-toolbar button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.pdf-btn-print { background: #54C999; color: #fff; }
-.pdf-btn-close { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4) !important; }
-.pdf-card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 10px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-.pdf-card img { width: 56px; height: 75px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
-.pdf-card-en { font-size: 1rem; font-weight: 600; color: #333; }
-.pdf-card-es { font-size: 0.78rem; color: #888; margin-top: 2px; }
-.pdf-card-note { font-size: 0.8rem; color: #555; font-style: italic; margin-top: 4px; }
-@media print {
-  .pdf-toolbar { display: none !important; }
-  #pdf-overlay { position: static; padding: 20px; }
-}
 /* ── TOAST ── */
 .toast {
   position: fixed;
@@ -976,7 +909,6 @@ nav button.active {
       <input type="text" id="cliente-nombre" placeholder="Nombre del cliente">
     </div>
     <button class="btn-login" onclick="startSession()">Comenzar sesión</button>
-    <button onclick="cancelSession()" style="width:100%;padding:11px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);font-family:'Montserrat',sans-serif;font-size:0.8rem;color:var(--text-muted);cursor:pointer;margin-top:8px;letter-spacing:0.06em;text-transform:uppercase">Cancelar</button>
     <div class="login-error" id="cliente-error"></div>
   </div>
 </div>
@@ -996,7 +928,6 @@ nav button.active {
   <button onclick="showView('explore', this)">🔍 Explorar</button>
   <button onclick="showView('session', this)">📋 Sesión</button>
   <button onclick="showView('history', this)">🕐 Historial</button>
-  <button class="btn-nav-close" onclick="closeSession()">✕ Sesión</button>
 </nav>
 
 <!-- HOME VIEW -->
@@ -1076,30 +1007,6 @@ nav button.active {
 </div>
 
 <div class="toast" id="toast"></div>
-
-<!-- PDF Overlay -->
-<div id="pdf-overlay">
-  <div class="pdf-toolbar">
-    <button class="pdf-btn-print" onclick="window.print()">&#128438; Imprimir / PDF</button>
-    <button class="pdf-btn-close" onclick="document.getElementById('pdf-overlay').classList.remove('open')">&#10005; Cerrar</button>
-  </div>
-  <div id="pdf-header"></div>
-  <div id="pdf-cards"></div>
-  <p style="margin-top:20px;font-size:0.7rem;color:#bbb;text-align:center">Inner Journey Method&#8482;</p>
-</div>
-
-<!-- Modal cerrar sesión -->
-<div id="modal-confirm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:400;align-items:center;justify-content:center;padding:20px">
-  <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:340px;width:100%;text-align:center;margin:auto">
-    <div style="font-size:2rem;margin-bottom:10px">&#9888;</div>
-    <div style="font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:600;margin-bottom:8px">Cerrar sesi&#243;n</div>
-    <div style="font-size:0.85rem;color:#888;margin-bottom:24px;line-height:1.5">Se borrar&#225;n las cartas y notas.<br>Esta acci&#243;n no se puede deshacer.</div>
-    <div style="display:flex;gap:10px">
-      <button onclick="confirmClose(false)" style="flex:1;padding:12px;background:transparent;border:1px solid #e0e0e0;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:0.85rem;color:#888;cursor:pointer">Cancelar</button>
-      <button onclick="confirmClose(true)" style="flex:1;padding:12px;background:#E24B4A;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:0.85rem;color:#fff;cursor:pointer;font-weight:600">S&#237;, cerrar</button>
-    </div>
-  </div>
-</div>
 
 <script>
 // ── SUPABASE ──
@@ -1453,22 +1360,18 @@ function renderSession() {
 }
 
 function closeSession() {
-  var m = document.getElementById('modal-confirm');
-  m.style.display = 'flex';
+  document.getElementById('modal-confirm').style.display = 'flex';
 }
-async function confirmClose(yes) {
-  document.getElementById('modal-confirm').style.display = 'none';
-  if (!yes) return;
-  // Guardar todas las notas en Supabase antes de cerrar
+
+async function _doCloseSession() {
   if (currentSessionId && Object.keys(state.notes).length) {
     try {
-      var saves = Object.keys(state.notes).map(function(n) {
-        return supa.from('session_cards')
+      await Promise.all(Object.keys(state.notes).map(n =>
+        supa.from('session_cards')
           .update({ notes: state.notes[n] })
           .eq('session_id', currentSessionId)
-          .eq('card_number', parseInt(n));
-      });
-      await Promise.all(saves);
+          .eq('card_number', parseInt(n))
+      ));
     } catch(e) {}
   }
   state.deck = [...CONCEPTS];
@@ -1482,34 +1385,23 @@ async function confirmClose(yes) {
   document.getElementById('card-wrap').style.display = 'none';
   document.getElementById('card-detail').classList.remove('visible');
   document.getElementById('btn-reflexiones').style.display = 'none';
+  document.getElementById('cliente-nombre').value = '';
+  document.getElementById('cliente-error').textContent = '';
   updateDeckInfo();
   renderSession();
-  showToast('Sesión guardada y cerrada');
-  // Pedir nombre del nuevo cliente
+  showToast('Sesión guardada');
   document.getElementById('modal-cliente').classList.add('open');
 }
 
-function pdfSession() {
-  if (!state.drawn.length) { showToast('No hay cartas en la sesión'); return; }
-  var fecha = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'long', year:'numeric'});
-  var cliente = currentClientName || '';
-  var hdr = document.getElementById('pdf-header');
-  var cards = document.getElementById('pdf-cards');
-  hdr.innerHTML = '<div style="border-bottom:3px solid #54C999;padding-bottom:12px;margin-bottom:20px">'
-    + '<div style="font-weight:800;font-size:1.1rem;letter-spacing:0.1em">INNER<span style="color:#54C999">JOURNEY</span>METHOD&#8482;</div>'
-    + (cliente ? '<div style="font-size:0.85rem;color:#555;margin-top:6px">Cliente: <strong>' + cliente + '</strong></div>' : '')
-    + '<div style="font-size:0.8rem;color:#888;margin-top:2px">' + fecha + '</div></div>';
-  var html = '';
-  state.drawn.forEach(function(c, i) {
-    var nota = state.notes[c.n] ? '<div class="pdf-card-note">' + state.notes[c.n] + '</div>' : '';
-    html += '<div class="pdf-card">'
-      + '<img src="' + imgUrl(c.n) + '">'
-      + '<div><div class="pdf-card-en">' + (i+1) + '. ' + c.en + '</div>'
-      + '<div class="pdf-card-es">' + c.es + ' &middot; #' + c.n + ' &middot; ' + CATS[c.cat].label + '</div>'
-      + nota + '</div></div>';
-  });
-  cards.innerHTML = html;
-  document.getElementById('pdf-overlay').classList.add('open');
+async function confirmClose(yes) {
+  document.getElementById('modal-confirm').style.display = 'none';
+  if (!yes) return;
+  await _doCloseSession();
+}
+
+async function cancelSession() {
+  document.getElementById('modal-cliente').classList.remove('open');
+  await _doCloseSession();
 }
 
 function exportSession() {
@@ -1627,38 +1519,6 @@ function onLogin(user) {
   document.getElementById('modal-cliente').classList.add('open');
 }
 
-async function cancelSession() {
-  document.getElementById('modal-cliente').classList.remove('open');
-  // Guardar notas pendientes en Supabase si hay sesión activa
-  if (currentSessionId && Object.keys(state.notes).length) {
-    try {
-      var saves = Object.keys(state.notes).map(function(n) {
-        return supa.from('session_cards')
-          .update({ notes: state.notes[n] })
-          .eq('session_id', currentSessionId)
-          .eq('card_number', parseInt(n));
-      });
-      await Promise.all(saves);
-    } catch(e) {}
-  }
-  // Limpiar estado
-  state.deck = [...CONCEPTS];
-  state.drawn = [];
-  state.current = null;
-  state.notes = {};
-  state.flipped = false;
-  currentSessionId = null;
-  currentClientName = '';
-  try { localStorage.removeItem('ijm_notes'); } catch(e) {}
-  document.getElementById('card-wrap').style.display = 'none';
-  document.getElementById('card-detail').classList.remove('visible');
-  document.getElementById('btn-reflexiones').style.display = 'none';
-  document.getElementById('cliente-nombre').value = '';
-  document.getElementById('cliente-error').textContent = '';
-  updateDeckInfo();
-  renderSession();
-}
-
 async function startSession() {
   const name = document.getElementById('cliente-nombre').value.trim();
   const errEl = document.getElementById('cliente-error');
@@ -1710,16 +1570,12 @@ async function saveNoteToSupabase(cardN, note) {
 }
 
 // ── HISTORIAL ──
-async function renderHistory() {
+let _allSessions = [];
+
+function _renderHistoryList(sessions) {
   const list = document.getElementById('history-list');
-  list.innerHTML = `<div class="session-empty" style="padding:40px 0;text-align:center;color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-style:italic">Cargando...</div>`;
-  if (!currentUser) return;
-  const { data: sessions } = await supa.from('sessions')
-    .select('*, session_cards(*)')
-    .eq('facilitator_id', currentUser.id)
-    .order('created_at', { ascending: false });
   if (!sessions || !sessions.length) {
-    list.innerHTML = `<div class="session-empty" style="padding:40px 0;text-align:center;color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-style:italic">No hay sesiones guardadas todavía</div>`;
+    list.innerHTML = `<div class="session-empty" style="padding:40px 0;text-align:center;color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-style:italic">No hay sesiones que coincidan</div>`;
     return;
   }
   list.innerHTML = sessions.map(s => `
@@ -1745,6 +1601,27 @@ async function renderHistory() {
   `).join('');
 }
 
+function filterHistory() {
+  const q = document.getElementById('history-search').value.trim().toLowerCase();
+  _renderHistoryList(q ? _allSessions.filter(s => s.client_name.toLowerCase().includes(q)) : _allSessions);
+}
+
+async function renderHistory() {
+  const list = document.getElementById('history-list');
+  list.innerHTML = `<div class="session-empty" style="padding:40px 0;text-align:center;color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-style:italic">Cargando...</div>`;
+  if (!currentUser) return;
+  const { data: sessions } = await supa.from('sessions')
+    .select('*, session_cards(*)')
+    .eq('facilitator_id', currentUser.id)
+    .order('created_at', { ascending: false });
+  _allSessions = sessions || [];
+  document.getElementById('history-search').value = '';
+  if (!_allSessions.length) {
+    list.innerHTML = `<div class="session-empty" style="padding:40px 0;text-align:center;color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-style:italic">No hay sesiones guardadas todavía</div>`;
+    return;
+  }
+  _renderHistoryList(_allSessions);
+}
 function toggleHistoryDetail(id) {
   const el = document.getElementById('hd-' + id);
   el.classList.toggle('open');
