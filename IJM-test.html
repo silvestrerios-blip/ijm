@@ -1615,7 +1615,7 @@ async function renderHistory() {
     .eq('facilitator_id', currentUser.id)
     .order('created_at', { ascending: false });
   _allSessions = sessions || [];
-  document.getElementById('history-search').value = '';
+  const searchEl = document.getElementById('history-search'); if (searchEl) searchEl.value = '';
   if (!_allSessions.length) {
     list.innerHTML = `<div class="session-empty" style="padding:40px 0;text-align:center;color:var(--text-muted);font-family:'Montserrat',sans-serif;font-size:1.1rem;font-style:italic">No hay sesiones guardadas todavía</div>`;
     return;
