@@ -1457,21 +1457,37 @@ function closeSession() {
   var m = document.getElementById('modal-confirm');
   m.style.display = 'flex';
 }
-function confirmClose(yes) {
+async function confirmClose(yes) {
   document.getElementById('modal-confirm').style.display = 'none';
   if (!yes) return;
+  // Guardar todas las notas en Supabase antes de cerrar
+  if (currentSessionId && Object.keys(state.notes).length) {
+    try {
+      var saves = Object.keys(state.notes).map(function(n) {
+        return supa.from('session_cards')
+          .update({ notes: state.notes[n] })
+          .eq('session_id', currentSessionId)
+          .eq('card_number', parseInt(n));
+      });
+      await Promise.all(saves);
+    } catch(e) {}
+  }
   state.deck = [...CONCEPTS];
   state.drawn = [];
   state.current = null;
   state.notes = {};
   state.flipped = false;
+  currentSessionId = null;
+  currentClientName = '';
   try { localStorage.removeItem('ijm_notes'); } catch(e) {}
   document.getElementById('card-wrap').style.display = 'none';
   document.getElementById('card-detail').classList.remove('visible');
   document.getElementById('btn-reflexiones').style.display = 'none';
   updateDeckInfo();
   renderSession();
-  showToast('Sesión cerrada y notas borradas');
+  showToast('Sesión guardada y cerrada');
+  // Pedir nombre del nuevo cliente
+  document.getElementById('modal-cliente').classList.add('open');
 }
 
 function pdfSession() {
