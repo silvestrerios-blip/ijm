@@ -1419,10 +1419,9 @@ function pdfSession() {
     + '<div style="font-size:0.8rem;color:#888;margin-top:2px">' + fecha + '</div></div>'
     + filas
     + '<div style="margin-top:24px;font-size:0.7rem;color:#bbb;text-align:center">Inner Journey Method™</div>'
-    + '<script>window.onload=function(){window.print()}<\/script>'
     + '</body></html>';
   const w = window.open('', '_blank');
-  if (w) { w.document.write(html); w.document.close(); }
+  if (w) { w.document.write(html); w.document.close(); w.setTimeout(function(){ w.print(); }, 800); }
   else { showToast('Activa las ventanas emergentes en tu navegador'); }
 }
 
