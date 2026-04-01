@@ -976,6 +976,7 @@ nav button.active {
       <input type="text" id="cliente-nombre" placeholder="Nombre del cliente">
     </div>
     <button class="btn-login" onclick="startSession()">Comenzar sesión</button>
+    <button onclick="document.getElementById('modal-cliente').classList.remove('open')" style="width:100%;padding:11px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);font-family:'Montserrat',sans-serif;font-size:0.8rem;color:var(--text-muted);cursor:pointer;margin-top:8px;letter-spacing:0.06em;text-transform:uppercase">Cancelar</button>
     <div class="login-error" id="cliente-error"></div>
   </div>
 </div>
@@ -1628,19 +1629,30 @@ function onLogin(user) {
 
 async function startSession() {
   const name = document.getElementById('cliente-nombre').value.trim();
-  if (!name) { document.getElementById('cliente-error').textContent = 'Escribe el nombre del cliente'; return; }
-  currentClientName = name;
+  const errEl = document.getElementById('cliente-error');
+  if (!name) { errEl.textContent = 'Escribe el nombre del cliente'; return; }
+  errEl.style.color = 'var(--text-muted)';
+  errEl.textContent = 'Creando sesión...';
   try {
     const { data, error } = await supa.from('sessions').insert({
       facilitator_id: currentUser.id,
       client_name: name
     }).select().single();
-    if (!error && data) currentSessionId = data.id;
-  } catch(e) {}
-  document.getElementById('modal-cliente').classList.remove('open');
-  document.getElementById('cliente-nombre').value = '';
-  document.getElementById('cliente-error').textContent = '';
-  showToast(`Sesión con ${name} iniciada`);
+    if (error || !data) {
+      errEl.style.color = '#E24B4A';
+      errEl.textContent = 'Error al crear sesión. Inténtalo de nuevo.';
+      return;
+    }
+    currentSessionId = data.id;
+    currentClientName = name;
+    document.getElementById('modal-cliente').classList.remove('open');
+    document.getElementById('cliente-nombre').value = '';
+    errEl.textContent = '';
+    showToast(`Sesión con ${name} iniciada`);
+  } catch(e) {
+    errEl.style.color = '#E24B4A';
+    errEl.textContent = 'Error de conexión. Inténtalo de nuevo.';
+  }
 }
 
 // ── GUARDAR CARTA EN SUPABASE ──
