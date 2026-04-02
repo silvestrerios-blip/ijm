@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>IJM Facilitador</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#54C999">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IJM">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --v:  #54C999;
+  --vd: #3aaa7f;
+  --vl: rgba(84,201,153,.12);
+  --g:  #666;
+  --gc: #f4f4f4;
+  --b:  #fff;
+  --n:  #1a1a1a;
+  --r:  10px;
+  --sh: 0 2px 14px rgba(0,0,0,.10);
+  --nh: 60px;
+  --hh: 54px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--gc);
+  color:var(--n);
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── HEADER ── */
+#hdr{
+  position:fixed;top:0;left:0;right:0;
+  height:var(--hh);
+  background:var(--v);
+  display:flex;align-items:center;
+  padding:0 16px;
+  z-index:90;
+  box-shadow:0 2px 12px rgba(84,201,153,.35);
+}
+#hdr-logo{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:17px;font-weight:700;
+  color:#fff;letter-spacing:2px;
+  flex:1;
+}
+#hdr-logo span{opacity:.7;font-weight:500}
+#hdr-ses{
+  font-size:11px;color:rgba(255,255,255,.85);
+  text-align:right;line-height:1.35;max-width:140px;
+}
+
+/* ── SCROLL AREA ── */
+#content{
+  position:fixed;
+  top:var(--hh);
+  bottom:calc(var(--nh) + var(--safe-b));
+  left:0;right:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.screen{display:none;padding:14px 14px 24px;animation:fi .2s ease}
+.screen.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── NAV ── */
+#nav{
+  position:fixed;bottom:0;left:0;right:0;
+  height:calc(var(--nh) + var(--safe-b));
+  padding-bottom:var(--safe-b);
+  background:#fff;
+  display:flex;
+  border-top:1px solid #e8e8e8;
+  z-index:90;
+}
+.nb{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:3px;background:none;border:none;cursor:pointer;
+  color:#bbb;font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.6px;
+  font-family:'DM Sans',sans-serif;
+  transition:color .15s;
+}
+.nb svg{width:22px;height:22px;stroke-width:1.8}
+.nb.on{color:var(--v)}
+
+/* ── CARD ── */
+.c{
+  background:#fff;border-radius:var(--r);
+  padding:16px;box-shadow:var(--sh);
+  margin-bottom:12px;
+}
+.ct{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--v);margin-bottom:12px;
+}
+
+/* ── BUTTONS ── */
+.btn{
+  display:block;width:100%;
+  padding:13px 18px;border-radius:var(--r);
+  border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.8px;
+  transition:all .15s;text-align:center;
+}
+.btn:active{transform:scale(.97)}
+.bp{background:var(--v);color:#fff}
+.bs{background:var(--gc);color:var(--g)}
+.bo{background:transparent;border:2px solid var(--v);color:var(--v)}
+.btn-sm{padding:7px 14px;font-size:11px;width:auto;display:inline-block;margin:0}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+
+/* ── INPUTS ── */
+.field{margin-bottom:12px}
+label{
+  display:block;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;
+  color:var(--g);margin-bottom:5px;
+}
+input,select,textarea{
+  width:100%;padding:11px 13px;
+  border:2px solid #e8e8e8;border-radius:var(--r);
+  font-size:15px;background:#fff;color:var(--n);
+  outline:none;transition:border-color .2s;
+  font-family:'DM Sans',sans-serif;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--v)}
+
+/* ── INICIO ── */
+.hero{
+  text-align:center;padding:28px 0 20px;
+}
+.hero-icon{
+  width:72px;height:72px;margin:0 auto 14px;
+  background:linear-gradient(135deg,var(--v),var(--vd));
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:34px;box-shadow:0 8px 24px rgba(84,201,153,.35);
+}
+.hero h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:22px;font-weight:700;letter-spacing:2px;
+  color:var(--v);text-transform:uppercase;
+}
+.hero p{font-size:13px;color:var(--g);margin-top:4px}
+
+/* ── BARAJA ── */
+.chips{
+  display:flex;gap:6px;overflow-x:auto;
+  padding:2px 0 8px;scrollbar-width:none;
+}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  padding:6px 13px;border-radius:20px;
+  border:2px solid #e0e0e0;background:#fff;
+  font-size:11px;font-weight:700;cursor:pointer;
+  white-space:nowrap;transition:all .15s;
+  font-family:'DM Sans',sans-serif;
+}
+.chip.on{border-color:var(--v);background:var(--v);color:#fff}
+
+#bara-wrap{
+  text-align:center;padding:14px 0;
+  position:relative;
+}
+#bara-img{
+  max-width:100%;max-height:46vh;
+  border-radius:12px;
+  box-shadow:0 8px 28px rgba(0,0,0,.20);
+  object-fit:contain;display:none;
+}
+#bara-ph{
+  width:180px;height:252px;margin:0 auto;
+  background:linear-gradient(135deg,var(--v),var(--vd));
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:52px;font-weight:900;
+  box-shadow:0 8px 28px rgba(84,201,153,.35);
+  font-family:'Space Grotesk',sans-serif;
+}
+#bara-info{
+  text-align:center;font-size:12px;
+  color:var(--g);margin:8px 0 4px;min-height:18px;
+}
+
+/* ── VER FULLSCREEN ── */
+#ver{
+  position:fixed;inset:0;z-index:200;
+  background:#000;
+  display:none;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+#ver.on{display:flex}
+#ver img{max-width:100vw;max-height:100vh;object-fit:contain}
+#ver-close{
+  position:absolute;top:16px;right:16px;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,.18);border:none;
+  color:#fff;font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+#ver-lbl{
+  position:absolute;bottom:28px;
+  color:rgba(255,255,255,.65);
+  font-size:13px;font-weight:700;
+}
+
+/* ── DINÁMICAS ── */
+.din-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.din-btn{
+  background:#fff;border-radius:var(--r);
+  padding:18px 10px;text-align:center;
+  box-shadow:var(--sh);cursor:pointer;
+  transition:all .15s;border:2px solid transparent;
+}
+.din-btn:active{transform:scale(.96);border-color:var(--v)}
+.din-btn .ico{font-size:30px;margin-bottom:6px}
+.din-btn .nom{
+  font-size:12px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;color:var(--g);
+}
+
+/* ── LAYOUT DINÁMICAS ── */
+.din-wrap{display:none}
+.din-head{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:14px;
+  background:#fff;border-radius:var(--r);
+  padding:12px 14px;box-shadow:var(--sh);
+}
+.din-head h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:15px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--v);flex:1;
+}
+.bk{background:none;border:none;font-size:22px;cursor:pointer;color:var(--g)}
+
+/* ZONAS */
+.zona{
+  background:#fff;border-radius:var(--r);
+  padding:11px 12px;box-shadow:var(--sh);
+  margin-bottom:8px;
+}
+.zl{
+  font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.8px;
+  color:var(--v);margin-bottom:7px;
+}
+.zc{
+  display:flex;flex-wrap:wrap;gap:6px;min-height:44px;
+  align-items:flex-start;
+}
+.ze{color:#ccc;font-size:12px;padding:4px 0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.nota{width:100%;margin-top:8px;min-height:52px;resize:none;font-size:13px}
+
+/* THUMBS */
+.thumb-w{position:relative;display:inline-block}
+.thumb{
+  width:48px;height:67px;border-radius:6px;
+  object-fit:cover;cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+  transition:transform .15s;display:block;
+}
+.thumb:active{transform:scale(1.08)}
+.thumb-n{
+  width:48px;height:67px;border-radius:6px;
+  background:linear-gradient(135deg,var(--v),var(--vd));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:900;font-size:13px;
+  cursor:pointer;box-shadow:0 2px 8px rgba(84,201,153,.3);
+  font-family:'Space Grotesk',sans-serif;
+}
+.rm{
+  position:absolute;top:-5px;right:-5px;
+  width:16px;height:16px;border-radius:50%;
+  background:#ff4455;color:#fff;border:none;
+  font-size:9px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  line-height:1;padding:0;
+}
+
+/* Piramide styling */
+.pnivel{
+  border-left:3px solid var(--v);
+  border-radius:0 var(--r) var(--r) 0;
+  background:#fff;padding:10px 12px;
+  box-shadow:var(--sh);margin-bottom:7px;
+}
+
+/* ── SESIONES ── */
+.ses-item{
+  background:#fff;border-radius:var(--r);
+  padding:13px 15px;box-shadow:var(--sh);
+  margin-bottom:9px;cursor:pointer;
+}
+.ses-item h3{font-size:15px;font-weight:700}
+.ses-item p{font-size:12px;color:var(--g);margin-top:3px}
+.badge{
+  display:inline-block;background:var(--v);
+  color:#fff;font-size:9px;font-weight:700;
+  padding:2px 8px;border-radius:8px;margin-top:5px;
+}
+
+/* ── COLOCAR PANEL ── */
+#colocar-panel{display:none}
+.zona-opts{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;
+}
+.zona-opt{
+  padding:7px 12px;border-radius:8px;
+  background:var(--gc);border:2px solid #e0e0e0;
+  font-size:11px;font-weight:700;cursor:pointer;
+  text-transform:uppercase;letter-spacing:.4px;
+  transition:all .15s;font-family:'DM Sans',sans-serif;
+}
+.zona-opt:active{background:var(--v);color:#fff;border-color:var(--v)}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:calc(var(--nh) + var(--safe-b) + 12px);
+  left:50%;transform:translateX(-50%);
+  background:rgba(26,26,26,.88);color:#fff;
+  padding:9px 18px;border-radius:20px;
+  font-size:13px;font-weight:500;z-index:300;
+  display:none;white-space:nowrap;backdrop-filter:blur(4px);
+}
+
+/* ── EMPTY STATE ── */
+.empty{
+  text-align:center;padding:40px 20px;
+  color:var(--g);font-size:14px;
+}
+.empty .ei{font-size:40px;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="hdr">
+  <div id="hdr-logo">🌀 IJM <span>Facilitador</span></div>
+  <div id="hdr-ses">Sin sesión</div>
+</header>
+
+<!-- ══ TOAST ══ -->
+<div id="toast"></div>
+
+<!-- ══ VER FULLSCREEN ══ -->
+<div id="ver">
+  <button id="ver-close" onclick="cerrarVer()">✕</button>
+  <img id="ver-img" src="" alt="">
+  <div id="ver-lbl"></div>
+</div>
+
+<!-- ══ CONTENT ══ -->
+<div id="content">
+
+  <!-- ─ INICIO ─ -->
+  <div id="screen-inicio" class="screen on">
+    <div class="hero">
+      <div class="hero-icon">🌀</div>
+      <h2>IJM Facilitador</h2>
+      <p>Inner Journey Method™</p>
+    </div>
+
+    <div class="c" id="nueva-sesion-card">
+      <div class="ct">Nueva Sesión</div>
+      <div class="field">
+        <label>Participante</label>
+        <input id="inp-part" type="text" placeholder="Nombre...">
+      </div>
+      <div class="field">
+        <label>Fecha</label>
+        <input id="inp-fecha" type="date">
+      </div>
+      <div class="field">
+        <label>Tema / Intención</label>
+        <textarea id="inp-nota" rows="2" placeholder="Contexto de la sesión..."></textarea>
+      </div>
+      <button class="btn bp" onclick="iniciarSesion()">Iniciar Sesión</button>
+    </div>
+
+    <div class="c" id="sesion-activa-card" style="display:none">
+      <div class="ct">Sesión Activa</div>
+      <p id="sesion-info" style="margin-bottom:12px;font-weight:500"></p>
+      <p id="sesion-nota" style="font-size:13px;color:var(--g);margin-bottom:14px;font-style:italic"></p>
+      <button class="btn bo" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+
+    <div class="c">
+      <div class="ct">Estado</div>
+      <p id="estado-conexion" style="font-size:13px;color:var(--g)">Verificando conexión Supabase...</p>
+    </div>
+  </div>
+
+  <!-- ─ BARAJA ─ -->
+  <div id="screen-baraja" class="screen">
+    <div class="c" style="padding:12px">
+      <div class="ct">Submazo</div>
+      <div class="chips">
+        <div class="chip on"  onclick="setSubmazo('general',this)">General (107)</div>
+        <div class="chip"     onclick="setSubmazo('s',this)">S – Simbólico (54)</div>
+        <div class="chip"     onclick="setSubmazo('n',this)">N – Narrativo (54)</div>
+        <div class="chip"     onclick="setSubmazo('pal',this)">PAL – Palabra (33)</div>
+        <div class="chip"     onclick="setSubmazo('ic',this)">IC – Indicios (37)</div>
+      </div>
+    </div>
+
+    <div id="bara-wrap">
+      <div id="bara-ph">🃏</div>
+      <img id="bara-img" src="" alt="" onclick="verAmpliada()">
+    </div>
+    <div id="bara-info">Pulsa para sacar una carta aleatoria</div>
+
+    <div class="btn-row">
+      <button class="btn bp" onclick="sacarCarta()">🎲 Aleatoria</button>
+      <button class="btn bs" id="btn-ver" onclick="verAmpliada()" disabled>🔍 Ver grande</button>
+    </div>
+
+    <div id="colocar-panel" class="c" style="margin-top:12px">
+      <div class="ct">Colocar en dinámica activa</div>
+      <p style="font-size:12px;color:var(--g);margin-bottom:4px" id="din-activa-label">—</p>
+      <div class="zona-opts" id="zonas-opts"></div>
+    </div>
+  </div>
+
+  <!-- ─ DINÁMICAS ─ -->
+  <div id="screen-dinamicas" class="screen">
+
+    <!-- Menú principal -->
+    <div id="din-menu">
+      <div class="ct" style="margin-bottom:14px">Dinámicas IJM</div>
+      <div class="din-grid">
+        <div class="din-btn" onclick="abrirDin('sombra')">
+          <div class="ico">🌑</div><div class="nom">Sombra</div>
+        </div>
+        <div class="din-btn" onclick="abrirDin('proposito')">
+          <div class="ico">🎯</div><div class="nom">Propósito</div>
+        </div>
+        <div class="din-btn" onclick="abrirDin('piramide')">
+          <div class="ico">🔺</div><div class="nom">Pirámide</div>
+        </div>
+        <div class="din-btn" onclick="abrirDin('dafo')">
+          <div class="ico">⬡</div><div class="nom">DAFO</div>
+        </div>
+        <div class="din-btn" onclick="abrirDin('estrategia')">
+          <div class="ico" style="font-family:'Space Grotesk';font-size:26px;font-weight:900">Y</div>
+          <div class="nom">Y-Estrategia</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─ SOMBRA ─ -->
+    <div id="din-sombra" class="din-wrap">
+      <div class="din-head">
+        <button class="bk" onclick="cerrarDin()">←</button>
+        <h2>🌑 Sombra</h2>
+        <button class="btn bp btn-sm" onclick="guardarDin('sombra')">💾 Guardar</button>
+      </div>
+      <div class="g2">
+        <div class="zona"><div class="zl">Límite</div><div class="zc" id="zs-limite"><span class="ze">Sin cartas</span></div></div>
+        <div class="zona"><div class="zl">Frontera</div><div class="zc" id="zs-frontera"><span class="ze">Sin cartas</span></div></div>
+      </div>
+      <div class="zona"><div class="zl">No soy, ni nunca seré</div><div class="zc" id="zs-nunca"><span class="ze">Sin cartas</span></div></div>
+      <div class="g2">
+        <div class="zona"><div class="zl">Potencial</div><div class="zc" id="zs-potencial"></div></div>
+        <div class="zona"><div class="zl">Debilidad</div><div class="zc" id="zs-debilidad"></div></div>
+      </div>
+      <div class="zona"><div class="zl">No soy, pero podría serlo</div><div class="zc" id="zs-podria"></div></div>
+      <div class="g2">
+        <div class="zona"><div class="zl">Sombra</div><div class="zc" id="zs-sombra"></div></div>
+        <div class="zona"><div class="zl">Identidad</div><div class="zc" id="zs-identidad"></div></div>
+      </div>
+      <div class="zona"><div class="zl">Notas</div><textarea class="nota" id="nota-sombra" placeholder="Observaciones..."></textarea></div>
+    </div>
+
+    <!-- ─ PROPÓSITO ─ -->
+    <div id="din-proposito" class="din-wrap">
+      <div class="din-head">
+        <button class="bk" onclick="cerrarDin()">←</button>
+        <h2>🎯 Propósito</h2>
+        <button class="btn bp btn-sm" onclick="guardarDin('proposito')">💾 Guardar</button>
+      </div>
+      <div class="zona"><div class="zl">Propósito</div><div class="zc" id="zp-proposito"><span class="ze">Sin cartas</span></div></div>
+      <div class="zona"><div class="zl">Lo que me hace tambalear</div><div class="zc" id="zp-tambalear"></div></div>
+      <div class="zona"><div class="zl">Caída</div><div class="zc" id="zp-caida"></div></div>
+      <div class="zona"><div class="zl">Herramientas que me ayudan</div><div class="zc" id="zp-herramientas"></div></div>
+      <div class="zona"><div class="zl">Notas</div><textarea class="nota" id="nota-proposito" placeholder="Observaciones..."></textarea></div>
+    </div>
+
+    <!-- ─ PIRÁMIDE ─ -->
+    <div id="din-piramide" class="din-wrap">
+      <div class="din-head">
+        <button class="bk" onclick="cerrarDin()">←</button>
+        <h2>🔺 Pirámide</h2>
+        <button class="btn bp btn-sm" onclick="guardarDin('piramide')">💾 Guardar</button>
+      </div>
+      <div class="pnivel"><div class="zl">Objetivo</div><div class="zc" id="zpi-objetivo"><span class="ze">Sin cartas</span></div></div>
+      <div class="pnivel"><div class="zl">Crecimiento</div><div class="zc" id="zpi-crecimiento"></div></div>
+      <div class="g2">
+        <div class="pnivel"><div class="zl">Miedos</div><div class="zc" id="zpi-miedos"></div></div>
+        <div class="pnivel"><div class="zl">Creencias limitantes</div><div class="zc" id="zpi-creencias"></div></div>
+      </div>
+      <div class="pnivel"><div class="zl">Zona Cómoda</div><div class="zc" id="zpi-comoda"></div></div>
+      <div class="g3">
+        <div class="pnivel"><div class="zl">Madre</div><div class="zc" id="zpi-madre"></div></div>
+        <div class="pnivel"><div class="zl">Esencia</div><div class="zc" id="zpi-esencia"></div></div>
+        <div class="pnivel"><div class="zl">Padre</div><div class="zc" id="zpi-padre"></div></div>
+      </div>
+      <div class="g2">
+        <div class="pnivel"><div class="zl">Libre albedrío</div><div class="zc" id="zpi-albedrio"></div></div>
+        <div class="pnivel"><div class="zl">Azar</div><div class="zc" id="zpi-azar"></div></div>
+      </div>
+      <div class="pnivel"><div class="zl">Tesoro</div><div class="zc" id="zpi-tesoro"></div></div>
+      <div class="zona"><div class="zl">Notas</div><textarea class="nota" id="nota-piramide" placeholder="Observaciones..."></textarea></div>
+    </div>
+
+    <!-- ─ DAFO ─ -->
+    <div id="din-dafo" class="din-wrap">
+      <div class="din-head">
+        <button class="bk" onclick="cerrarDin()">←</button>
+        <h2>⬡ DAFO</h2>
+        <button class="btn bp btn-sm" onclick="guardarDin('dafo')">💾 Guardar</button>
+      </div>
+      <div class="g2">
+        <div class="zona"><div class="zl">Valor</div><div class="zc" id="zd-valor"><span class="ze">Sin cartas</span></div></div>
+        <div class="zona"><div class="zl">Reto</div><div class="zc" id="zd-reto"></div></div>
+      </div>
+      <div class="g3">
+        <div class="zona"><div class="zl">Amenazas</div><div class="zc" id="zd-amenazas"></div></div>
+        <div class="zona"><div class="zl">Fortalezas</div><div class="zc" id="zd-fortalezas"></div></div>
+        <div class="zona"><div class="zl">Debilidades</div><div class="zc" id="zd-debilidades"></div></div>
+      </div>
+      <div class="g2">
+        <div class="zona"><div class="zl">Sentimiento</div><div class="zc" id="zd-sentimiento"></div></div>
+        <div class="zona"><div class="zl">Equilibrador</div><div class="zc" id="zd-equilibrador"></div></div>
+      </div>
+      <div class="g3">
+        <div class="zona"><div class="zl">Necesidad</div><div class="zc" id="zd-necesidad"></div></div>
+        <div class="zona"><div class="zl">Deseo</div><div class="zc" id="zd-deseo"></div></div>
+        <div class="zona"><div class="zl">Oportunidades</div><div class="zc" id="zd-oportunidades"></div></div>
+      </div>
+      <div class="zona"><div class="zl">Notas</div><textarea class="nota" id="nota-dafo" placeholder="Observaciones..."></textarea></div>
+    </div>
+
+    <!-- ─ Y-ESTRATEGIA ─ -->
+    <div id="din-estrategia" class="din-wrap">
+      <div class="din-head">
+        <button class="bk" onclick="cerrarDin()">←</button>
+        <h2>Y-Estrategia</h2>
+        <button class="btn bp btn-sm" onclick="guardarDin('estrategia')">💾 Guardar</button>
+      </div>
+      <div class="g2">
+        <div>
+          <div class="ct" style="text-align:center;margin-bottom:8px">Pasado</div>
+          <div class="zona"><div class="zl">Creencias</div><div class="zc" id="ze-creencias"><span class="ze">Sin cartas</span></div></div>
+          <div class="zona"><div class="zl">Valores</div><div class="zc" id="ze-valores"></div></div>
+          <div class="zona"><div class="zl">Experiencias</div><div class="zc" id="ze-experiencias"></div></div>
+        </div>
+        <div>
+          <div class="ct" style="text-align:center;margin-bottom:8px">Futuro</div>
+          <div class="zona"><div class="zl">Energía</div><div class="zc" id="ze-energia"></div></div>
+          <div class="zona"><div class="zl">Ilusión</div><div class="zc" id="ze-ilusion"></div></div>
+          <div class="zona"><div class="zl">Los sueños</div><div class="zc" id="ze-suenos"></div></div>
+        </div>
+      </div>
+      <div class="ct" style="text-align:center;margin:12px 0 8px">Estrategia</div>
+      <div class="g2">
+        <div class="zona"><div class="zl">Creatividad</div><div class="zc" id="ze-creatividad"></div></div>
+        <div class="zona"><div class="zl">Sostén</div><div class="zc" id="ze-sosten"></div></div>
+      </div>
+      <div class="g2">
+        <div class="zona"><div class="zl">Viaje</div><div class="zc" id="ze-viaje"></div></div>
+        <div class="zona"><div class="zl">Aventura</div><div class="zc" id="ze-aventura"></div></div>
+      </div>
+      <div class="zona"><div class="zl">Notas</div><textarea class="nota" id="nota-estrategia" placeholder="Observaciones..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- ─ SESIONES ─ -->
+  <div id="screen-sesiones" class="screen">
+    <div class="ct" style="margin-bottom:14px">Historial de Sesiones</div>
+    <div id="ses-list">
+      <div class="empty"><div class="ei">📋</div>Cargando sesiones...</div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- ══ NAV ══ -->
+<nav id="nav">
+  <button class="nb on" onclick="go('inicio',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Inicio
+  </button>
+  <button class="nb" onclick="go('baraja',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M12 9v6M9 12h6"/></svg>
+    Baraja
+  </button>
+  <button class="nb" onclick="go('dinamicas',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    Dinámicas
+  </button>
+  <button class="nb" onclick="go('sesiones',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Sesiones
+  </button>
+</nav>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// ⚙️  CONFIGURACIÓN — rellena con tus datos de Supabase
+// ═══════════════════════════════════════════════════════
+const SB_URL  = 'https://lynqikyddjogbndaonia.supabase.co';
+const SB_KEY  = 'sb_publishable_g-R5vAMj6tVFaLMhK0pCCQ_0vadE...'; // la completaconst 
+const BUCKET  = 'imagenes-IJM';
+const IMG_EXT = '.jpg';   // '.jpg' o '.png' según tu bucket
+
+// ═══════════════════════════════════════════════════════
+// 📦  SUBMAZOS
+// ═══════════════════════════════════════════════════════
+const SUBMAZOS = {
+  general:  { n:'General',         c: Array.from({length:107},(_,i)=>i+1) },
+  s:        { n:'S – Simbólico',   c: Array.from({length:54}, (_,i)=>(i+1)*2) },
+  n:        { n:'N – Narrativo',   c: Array.from({length:54}, (_,i)=>i*2+1) },
+  pal:      { n:'PAL – Palabra',   c: Array.from({length:33}, (_,i)=>i+26) },
+  ic:       { n:'IC – Indicios',   c: [103,93,71,87,82,95,67,108,86,104,99,101,63,
+                                         100,57,33,78,106,27,80,91,21,84,96,59,73,
+                                         102,76,29,17,89,37,23,97] }
+};
+
+// ═══════════════════════════════════════════════════════
+// 🗺️  ZONAS POR DINÁMICA
+// ═══════════════════════════════════════════════════════
+const ZONAS = {
+  sombra:    [
+    {id:'zs-limite',    l:'Límite'},
+    {id:'zs-frontera',  l:'Frontera'},
+    {id:'zs-nunca',     l:'No soy, ni nunca seré'},
+    {id:'zs-potencial', l:'Potencial'},
+    {id:'zs-debilidad', l:'Debilidad'},
+    {id:'zs-podria',    l:'No soy, pero podría serlo'},
+    {id:'zs-sombra',    l:'Sombra'},
+    {id:'zs-identidad', l:'Identidad'},
+  ],
+  proposito: [
+    {id:'zp-proposito',    l:'Propósito'},
+    {id:'zp-tambalear',    l:'Lo que me hace tambalear'},
+    {id:'zp-caida',        l:'Caída'},
+    {id:'zp-herramientas', l:'Herramientas'},
+  ],
+  piramide:  [
+    {id:'zpi-objetivo',   l:'Objetivo'},
+    {id:'zpi-crecimiento',l:'Crecimiento'},
+    {id:'zpi-miedos',     l:'Miedos'},
+    {id:'zpi-creencias',  l:'Creencias limitantes'},
+    {id:'zpi-comoda',     l:'Zona Cómoda'},
+    {id:'zpi-madre',      l:'Madre'},
+    {id:'zpi-esencia',    l:'Esencia'},
+    {id:'zpi-padre',      l:'Padre'},
+    {id:'zpi-albedrio',   l:'Libre albedrío'},
+    {id:'zpi-azar',       l:'Azar'},
+    {id:'zpi-tesoro',     l:'Tesoro'},
+  ],
+  dafo:      [
+    {id:'zd-valor',       l:'Valor'},
+    {id:'zd-reto',        l:'Reto'},
+    {id:'zd-amenazas',    l:'Amenazas'},
+    {id:'zd-fortalezas',  l:'Fortalezas'},
+    {id:'zd-debilidades', l:'Debilidades'},
+    {id:'zd-sentimiento', l:'Sentimiento'},
+    {id:'zd-equilibrador',l:'Equilibrador'},
+    {id:'zd-necesidad',   l:'Necesidad'},
+    {id:'zd-deseo',       l:'Deseo'},
+    {id:'zd-oportunidades',l:'Oportunidades'},
+  ],
+  estrategia:[
+    {id:'ze-creencias',   l:'Creencias (Pasado)'},
+    {id:'ze-valores',     l:'Valores (Pasado)'},
+    {id:'ze-experiencias',l:'Experiencias (Pasado)'},
+    {id:'ze-energia',     l:'Energía (Futuro)'},
+    {id:'ze-ilusion',     l:'Ilusión (Futuro)'},
+    {id:'ze-suenos',      l:'Los sueños (Futuro)'},
+    {id:'ze-creatividad', l:'Creatividad'},
+    {id:'ze-sosten',      l:'Sostén'},
+    {id:'ze-viaje',       l:'Viaje'},
+    {id:'ze-aventura',    l:'Aventura'},
+  ]
+};
+
+// ═══════════════════════════════════════════════════════
+// 🧠  ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════
+const S = {
+  sesion:   null,
+  submazo:  'general',
+  carta:    null,
+  dinamica: null,
+  zonas:    {}     // { zonaId: [num, ...] }
+};
+
+// ═══════════════════════════════════════════════════════
+// 🌐  SUPABASE HELPER
+// ═══════════════════════════════════════════════════════
+async function sb(path, opts={}) {
+  const r = await fetch(`${SB_URL}/rest/v1/${path}`, {
+    method: opts.method || 'GET',
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...(opts.headers||{})
+    },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.status===204 ? null : r.json();
+}
+function imgUrl(n) {
+  return `${SB_URL}/storage/v1/object/public/${BUCKET}/${n}${IMG_EXT}`;
+}
+
+// ═══════════════════════════════════════════════════════
+// 🧭  NAVEGACIÓN
+// ═══════════════════════════════════════════════════════
+function go(screen, btn) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById(`screen-${screen}`).classList.add('on');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  document.getElementById('content').scrollTop = 0;
+  if(screen==='sesiones') cargarSesiones();
+}
+
+// ═══════════════════════════════════════════════════════
+// 👤  SESIÓN
+// ═══════════════════════════════════════════════════════
+async function iniciarSesion() {
+  const part  = document.getElementById('inp-part').value.trim();
+  const fecha = document.getElementById('inp-fecha').value;
+  const nota  = document.getElementById('inp-nota').value.trim();
+  if(!part)  { toast('Introduce el nombre del participante'); return; }
+  if(!fecha) { toast('Selecciona la fecha'); return; }
+
+  try {
+    const [row] = await sb('sesiones', {method:'POST', body:{participante:part,fecha,notas:nota}});
+    S.sesion = row;
+    toast('✅ Sesión guardada en Supabase');
+  } catch(e) {
+    S.sesion = {id:null,participante:part,fecha,notas:nota,local:true};
+    toast('⚠️ Sesión local — sin conexión');
+  }
+
+  actualizarHdr();
+  document.getElementById('nueva-sesion-card').style.display='none';
+  document.getElementById('sesion-activa-card').style.display='block';
+  document.getElementById('sesion-info').textContent = `${part}  ·  ${fFecha(fecha)}`;
+  document.getElementById('sesion-nota').textContent = nota;
+}
+
+function cerrarSesion() {
+  S.sesion=null; S.carta=null;
+  actualizarHdr();
+  document.getElementById('sesion-activa-card').style.display='none';
+  document.getElementById('nueva-sesion-card').style.display='block';
+  toast('Sesión cerrada');
+}
+
+function actualizarHdr() {
+  const el = document.getElementById('hdr-ses');
+  el.innerHTML = S.sesion
+    ? `<strong>${S.sesion.participante}</strong><br>${fFecha(S.sesion.fecha)}`
+    : 'Sin sesión';
+}
+
+// ═══════════════════════════════════════════════════════
+// 🃏  BARAJA
+// ═══════════════════════════════════════════════════════
+function setSubmazo(key, el) {
+  S.submazo = key;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  resetCarta();
+}
+
+function resetCarta() {
+  S.carta=null;
+  document.getElementById('bara-img').style.display='none';
+  document.getElementById('bara-ph').style.display='flex';
+  document.getElementById('bara-ph').textContent='🃏';
+  document.getElementById('bara-info').textContent='Pulsa para sacar una carta aleatoria';
+  document.getElementById('btn-ver').disabled=true;
+  actualizarColocar();
+}
+
+function sacarCarta() {
+  const deck = SUBMAZOS[S.submazo].c;
+  const n = deck[Math.floor(Math.random()*deck.length)];
+  S.carta = n;
+
+  const img=document.getElementById('bara-img');
+  const ph=document.getElementById('bara-ph');
+  ph.textContent=n; ph.style.display='flex';
+  img.style.display='none';
+
+  img.src=imgUrl(n);
+  img.onload=()=>{ ph.style.display='none'; img.style.display='block'; };
+  img.onerror=()=>{ ph.style.display='flex'; img.style.display='none'; };
+
+  document.getElementById('bara-info').textContent=`Imagen ${n}  ·  ${SUBMAZOS[S.submazo].n}`;
+  document.getElementById('btn-ver').disabled=false;
+  actualizarColocar();
+}
+
+function actualizarColocar() {
+  const panel=document.getElementById('colocar-panel');
+  if(!S.dinamica || !S.carta){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  document.getElementById('din-activa-label').textContent=
+    S.dinamica.charAt(0).toUpperCase()+S.dinamica.slice(1);
+  const opts=document.getElementById('zonas-opts');
+  opts.innerHTML=(ZONAS[S.dinamica]||[]).map(z=>
+    `<button class="zona-opt" onclick="ponerEnZona('${z.id}')">${z.l}</button>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// 🔍  VER AMPLIADA
+// ═══════════════════════════════════════════════════════
+function verAmpliada(n) {
+  const num=n||S.carta; if(!num) return;
+  document.getElementById('ver-img').src=imgUrl(num);
+  document.getElementById('ver-lbl').textContent=`Imagen ${num}`;
+  document.getElementById('ver').classList.add('on');
+}
+function cerrarVer(){ document.getElementById('ver').classList.remove('on'); }
+
+// ═══════════════════════════════════════════════════════
+// 🎯  DINÁMICAS
+// ═══════════════════════════════════════════════════════
+function abrirDin(nombre) {
+  document.getElementById('din-menu').style.display='none';
+  document.querySelectorAll('.din-wrap').forEach(d=>d.style.display='none');
+  document.getElementById(`din-${nombre}`).style.display='block';
+  S.dinamica=nombre;
+  actualizarColocar();
+  document.getElementById('content').scrollTop=0;
+}
+
+function cerrarDin() {
+  document.querySelectorAll('.din-wrap').forEach(d=>d.style.display='none');
+  document.getElementById('din-menu').style.display='block';
+  S.dinamica=null;
+  actualizarColocar();
+}
+
+function ponerEnZona(zonaId) {
+  if(!S.carta){ toast('Primero saca una carta'); return; }
+  const n=S.carta;
+  const el=document.getElementById(zonaId); if(!el) return;
+  el.querySelector('.ze')?.remove();
+
+  el.appendChild(mkThumb(n,zonaId));
+  if(!S.zonas[zonaId]) S.zonas[zonaId]=[];
+  S.zonas[zonaId].push(n);
+  toast(`Carta ${n} → colocada`);
+  go('dinamicas', document.querySelectorAll('.nb')[2]);
+}
+
+function mkThumb(n, zonaId) {
+  const w=document.createElement('div');
+  w.className='thumb-w';
+
+  const img=document.createElement('img');
+  img.className='thumb'; img.src=imgUrl(n); img.alt=`Imagen ${n}`;
+  img.onclick=()=>verAmpliada(n);
+  img.onerror=()=>{
+    w.innerHTML='';
+    const d=document.createElement('div');
+    d.className='thumb-n'; d.textContent=n; d.onclick=()=>verAmpliada(n);
+    w.appendChild(d);
+    const rm2=mkRm(w,n,zonaId); w.appendChild(rm2);
+  };
+  w.appendChild(img);
+  w.appendChild(mkRm(w,n,zonaId));
+  return w;
+}
+
+function mkRm(w,n,zonaId) {
+  const rm=document.createElement('button');
+  rm.className='rm'; rm.textContent='✕';
+  rm.onclick=e=>{
+    e.stopPropagation(); w.remove();
+    if(S.zonas[zonaId]) S.zonas[zonaId]=S.zonas[zonaId].filter(x=>x!==n);
+  };
+  return rm;
+}
+
+async function guardarDin(nombre) {
+  if(!S.sesion){ toast('Inicia una sesión primero'); return; }
+  const nota = document.getElementById(`nota-${nombre}`)?.value||'';
+  const payload = {
+    sesion_id:    S.sesion.local ? null : S.sesion.id,
+    participante: S.sesion.participante,
+    fecha:        S.sesion.fecha,
+    dinamica:     nombre,
+    zonas:        S.zonas,
+    notas:        nota
+  };
+  try {
+    await sb('dinamicas',{method:'POST',body:payload,prefer:'return=minimal'});
+    toast('✅ Guardado en Supabase');
+  } catch(e) {
+    localStorage.setItem(`ijm_${Date.now()}`,JSON.stringify(payload));
+    toast('💾 Guardado localmente');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// 📋  HISTORIAL SESIONES
+// ═══════════════════════════════════════════════════════
+async function cargarSesiones() {
+  const cont=document.getElementById('ses-list');
+  cont.innerHTML='<div class="empty"><div class="ei">⏳</div>Cargando...</div>';
+  try {
+    const rows=await sb('sesiones?order=created_at.desc&limit=50');
+    if(!rows||rows.length===0){
+      cont.innerHTML='<div class="empty"><div class="ei">📭</div>Sin sesiones registradas aún</div>';
+      return;
+    }
+    const dins=await sb('dinamicas?order=created_at.desc&limit=100').catch(()=>[]);
+    cont.innerHTML=rows.map(s=>{
+      const dinsS=(dins||[]).filter(d=>d.sesion_id===s.id);
+      return `
+        <div class="ses-item">
+          <h3>${s.participante}</h3>
+          <p>${fFecha(s.fecha)}${s.notas?'  ·  '+s.notas.substring(0,40):''}${s.notas&&s.notas.length>40?'…':''}</p>
+          ${dinsS.map(d=>`<span class="badge">${d.dinamica}</span>`).join(' ')}
+        </div>`;
+    }).join('');
+  } catch(e) {
+    // Mostrar locales
+    const locales=Object.keys(localStorage)
+      .filter(k=>k.startsWith('ijm_'))
+      .map(k=>JSON.parse(localStorage.getItem(k)));
+    if(locales.length===0){
+      cont.innerHTML='<div class="empty"><div class="ei">📡</div>Sin conexión a Supabase</div>';
+    } else {
+      cont.innerHTML=locales.reverse().map(s=>`
+        <div class="ses-item">
+          <h3>${s.participante||'—'}</h3>
+          <p>${fFecha(s.fecha)}  ·  ${s.dinamica}</p>
+          <span class="badge">LOCAL</span>
+        </div>`).join('');
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// 🛠️  UTILS
+// ═══════════════════════════════════════════════════════
+function fFecha(f){
+  if(!f) return '';
+  const [y,m,d]=f.split('-'); return `${d}/${m}/${y}`;
+}
+
+let _tt;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.style.display='block';
+  clearTimeout(_tt); _tt=setTimeout(()=>el.style.display='none',2600);
+}
+
+async function checkConexion() {
+  const el=document.getElementById('estado-conexion');
+  try {
+    await sb('sesiones?limit=1&select=id');
+    el.innerHTML='<span style="color:var(--v)">✅ Conectado a Supabase</span>';
+  } catch(e) {
+    el.innerHTML='<span style="color:#e55">⚠️ Sin conexión — modo local activo</span>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// 🚀  INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('inp-fecha').valueAsDate=new Date();
+  if('serviceWorker' in navigator)
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  checkConexion();
+});
+</script>
+</body>
+</html>
