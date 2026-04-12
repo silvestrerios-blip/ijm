@@ -51,6 +51,10 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { overflow-x: hidden; }
 
+/* ── Tracking salida ── */
+window.addEventListener('beforeunload', () => { registrarSalida(); });
+window.addEventListener('pagehide', () => { registrarSalida(); });
+
 /* ── Protección de imágenes ── */
 img {
   -webkit-user-drag: none;
@@ -1406,6 +1410,32 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// ── TRACKING DE ACCESOS ──
+let _acceso_id = null;
+let _entrada_ts = null;
+
+async function registrarEntrada(user) {
+  _entrada_ts = new Date();
+  try {
+    const { data } = await supa.from('accesos').insert({
+      facilitador_id: user.id,
+      facilitador_nombre: user.email
+    }).select().single();
+    if (data) _acceso_id = data.id;
+  } catch(e) {}
+}
+
+async function registrarSalida() {
+  if (!_acceso_id || !_entrada_ts) return;
+  try {
+    const mins = Math.round((new Date() - _entrada_ts) / 60000);
+    await supa.from('accesos').update({
+      salida: new Date().toISOString(),
+      duracion_minutos: mins
+    }).eq('id', _acceso_id);
+  } catch(e) {}
+}
+
 // ── LOGIN / SUPABASE ──
 function switchTab(tab) {
   document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
@@ -1457,6 +1487,7 @@ async function doRegister() {
 }
 
 async function doLogout() {
+  await registrarSalida();
   await supa.auth.signOut();
   currentUser = null;
   currentSessionId = null;
@@ -1484,6 +1515,7 @@ async function doLogout() {
 
 function onLogin(user) {
   currentUser = user;
+  registrarEntrada(user);
   document.getElementById('login-screen').classList.remove('active');
   document.getElementById('user-email').textContent = user.email;
   // Pedir nombre del cliente
